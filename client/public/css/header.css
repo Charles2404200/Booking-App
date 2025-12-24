@@ -1,0 +1,53 @@
+/* Header*/
+.nav-bar {
+    background-color: var(--nav-background-color);
+    color: var(--nav-text-color);
+    padding: 10px 20px; /* Padding around navbar */
+    border-bottom: 1px solid var(--nav-background-border-color); /* Subtle bottom border */
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Distribute items evenly */
+    align-items: center; /* Center items vertically */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  .nav-bar .nav-items {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Add a gap between CartButton and AccountButton */
+  }
+  
+  .nav-bar .logo {
+    flex: 0 0 auto; /* Prevent logo from growing or shrinking */
+  }
+  
+  .nav-bar ul {
+    list-style-type: none; /* Remove default list styles */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Use flexbox for layout */
+    justify-content: flex-end; /* Align items to the right */
+    align-items: center; /* Center items vertically */
+  }
+  
+  .nav-bar ul li {
+    margin-right: 0px; /* Spacing between list items */
+  }
+  
+  .nav-bar ul li:last-child {
+    margin-right: 0; /* Remove margin from the last item */
+  }
+  
+  .nav-bar ul li a {
+    text-decoration: none; /* Remove underline from links */
+    color: var(--nav-text-color);
+    font-weight: bold; /* Bold font for links */
+    transition: color 0.3s ease; /* Smooth color transition */
+  }
+  
+  .nav-bar ul li a:hover {
+    color: #008489; /* Airbnb's primary color on hover */
+  }
+  @media (max-width: 767px) {
+    .nav-bar{
+      width: 55vh;
+    }
+  }

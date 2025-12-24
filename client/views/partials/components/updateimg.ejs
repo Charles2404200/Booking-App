@@ -1,0 +1,156 @@
+<link rel="stylesheet" href="/css/updateimg.css">
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<div class="update-overlay" id="update-overlay"></div>
+
+<div class="update-img-modal">
+    <div class="header-update">
+        <button class="close-update" onclick="closeUpdateImg()">X</button>
+        <h2>Booking Account</h2>
+    </div>
+    <h2>Profile Picture</h2>
+    <% if(user){ %>
+        <%- include('./thumbnail') %>
+            <% } %>
+                <p>A picture helps people recognize you and lets you know when you are signed in to your account</p>
+
+                <form id="update-img-form" method="POST" action="/update-img" enctype="multipart/form-data">
+                    <input id="fileInput" type="file" name="imageFile" onchange="handleImageChange(event)" />
+                    <input type="text" name="imgUrl" id="imgUrl" value="" oninput="handleImageChangeWithUrl(event)"
+                        placeholder="URL link" />
+                    <button type="submit">Submit</button>
+                </form>
+</div>
+
+<script>
+    let newImage = null;
+    let url = '';
+
+    function handleImageChange(e) {
+        const file = e.target.files[0];
+        newImage = file;
+        url = ''; // Clear the URL when a new image file is selected
+        document.getElementById('imgUrl').value = '';
+        document.getElementById('imgUrl').disabled = true;
+        document.getElementById('fileInput').disabled = false;
+    }
+
+    function handleImageChangeWithUrl(e) {
+        const value = e.target.value;
+        url = value;
+        newImage = null; // Clear the file input when a new URL is entered
+        document.getElementById('fileInput').value = ''; // Clear file input value
+        document.getElementById('fileInput').disabled = true;
+        document.getElementById('imgUrl').disabled = false;
+    }
+
+    function resetForm() {
+        newImage = null;
+        url = '';
+        document.getElementById('fileInput').value = '';
+        document.getElementById('imgUrl').value = '';
+        document.getElementById('fileInput').disabled = false;
+        document.getElementById('imgUrl').disabled = false;
+    }
+
+    async function validateAndCheckImageUrl(url) {
+        try {
+            const knownDomains = ['gstatic.com', 'googleusercontent.com'];
+            const urlObject = new URL(url);
+            const domain = urlObject.hostname;
+
+            if (knownDomains.some(knownDomain => domain.endsWith(knownDomain))) {
+                return true; // Assume valid if it's a known domain
+            }
+
+            const response = await fetch(url, { method: 'HEAD', mode: 'cors', redirect: 'follow' });
+            const contentType = response.headers.get('Content-Type');
+
+            if (contentType && contentType.startsWith('image/')) {
+                return true;
+            } else {
+                alert('The URL does not point to a valid image');
+                return false;
+            }
+        } catch (error) {
+            alert('Error checking image URL');
+            console.error('Error checking image URL:', error);
+            return false;
+        }
+    }
+
+    async function handleSubmit(e) {
+
+        e.preventDefault();
+
+        if (!newImage && !url) {
+            alert('Please provide an image file or a URL.');
+            return;
+        }
+
+        if (url && !(await validateAndCheckImageUrl(url))) {
+            return;
+        }
+
+        try {
+            let imageData = {};
+
+            // If there is a new image file, upload it first
+            if (newImage) {
+                const formData = new FormData();
+                formData.append('imageFile', newImage);
+
+                // Upload the image file to the server
+                const userImg = "<%= user ? user.img : '' %>"; // Get the current image path
+
+                // Upload the image file to the server, passing the current image path
+                const uploadResponse = await axios.post(`/update-img?userImg=${userImg}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                // Use the uploaded file path from the server's response
+                imageData.img = uploadResponse.data.fileUrl;
+
+            }
+            else {
+                imageData.img = url;
+
+                const formData = new FormData();
+                formData.append('imageFile', null); // Sending a null file
+
+                const userImg = "<%= user ? user.img : '' %>";
+                if (userImg.startsWith('https://pub-93b162f2c2324969b45e28374787425b.r2.dev/')) {
+                    await axios.post(`/update-img?userImg=${userImg}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                }
+            }
+
+            // After uploading the image or using the URL, update the user's profile with the image path
+            await handleUpdate(imageData);
+            console.log('Update img successful');
+        } catch (error) {
+            console.error('Error updating image:', error);
+            alert(error.response?.data?.message || 'Update failed');
+        }
+    }
+    async function handleUpdate(userData) {
+        const userId = "<%= user ? user._id : null %>";
+        try {
+            const response = await axios.put(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/users/${userId}`, userData, {
+                withCredentials: true,
+            });
+            alert('Update successful!');
+            window.location.reload();
+        } catch (error) {
+            console.error("Error updating user:", error);
+            alert(error.response?.data?.message || 'Update failed');
+        }
+    }
+
+    document.getElementById('update-img-form').addEventListener('submit', handleSubmit);
+</script>

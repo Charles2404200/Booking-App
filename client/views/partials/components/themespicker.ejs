@@ -1,0 +1,96 @@
+<link rel="stylesheet" href="/css/themespicker.css">
+
+<div class="theme-picker">
+    <input type="color" id="base-color-picker" name="base-color-picker" value="#2196F3">
+    <button id="reset-theme-btn">Reset to Default</button> <!-- Reset Button -->
+</div>
+
+<script>
+// Function to adjust brightness of the color (for generating lighter/darker shades)
+function adjustColorBrightness(hex, percent) {
+    const num = parseInt(hex.slice(1), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) + amt;
+    const G = (num >> 8 & 0x00FF) + amt;
+    const B = (num & 0x0000FF) + amt;
+
+    return '#' + (
+        0x1000000 + 
+        (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 + 
+        (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 + 
+        (B < 255 ? (B < 1 ? 0 : B) : 255)
+    ).toString(16).slice(1);
+}
+
+// Function to set all theme variables dynamically based on base color
+function setThemeColors(baseColor) {
+    const lighterColor = adjustColorBrightness(baseColor, 30); // Lighten by 30%
+    const darkerColor = adjustColorBrightness(baseColor, -30); // Darken by 30%
+    const lightestColor = adjustColorBrightness(baseColor, 50); // Lighten by 50%
+    const darkestColor = adjustColorBrightness(baseColor, -50); // Darken by 50%
+    const mediumLighterColor = adjustColorBrightness(baseColor, 20); // Lighter by 20%
+    const mediumDarkerColor = adjustColorBrightness(baseColor, -20); // Darker by 20%
+
+    // Set CSS variables for custom theme
+    document.documentElement.style.setProperty('--background-color', lighterColor);
+    document.documentElement.style.setProperty('--text-color', lightestColor);
+    document.documentElement.style.setProperty('--nav-background-color', baseColor);
+    document.documentElement.style.setProperty('--nav-background-border-color', darkerColor);
+    document.documentElement.style.setProperty('--carousell-color', lightestColor);
+    document.documentElement.style.setProperty('--sidebar--background-color', darkerColor);
+    document.documentElement.style.setProperty('--sidebar--text-color', darkerColor);
+    document.documentElement.style.setProperty('--user-profile--border-color', darkerColor);
+    document.documentElement.style.setProperty('--changeImg--background-color', baseColor);
+    document.documentElement.style.setProperty('--attractive-img--background-color', lighterColor);
+    document.documentElement.style.setProperty('--attractive-item--background-color', lightestColor);
+    document.documentElement.style.setProperty('--attractive-titles--text-color', darkerColor);
+    document.documentElement.style.setProperty('--attractive-h2--text-color', darkerColor);
+    document.documentElement.style.setProperty('--textipnut--background-color', lighterColor);
+    document.documentElement.style.setProperty('--popup--text-color', darkerColor);
+    document.documentElement.style.setProperty('--hoteldash--border-color', darkerColor);
+    document.documentElement.style.setProperty('--coal--text-color', baseColor);
+    document.documentElement.style.setProperty('--ipnut--background-color', lightestColor);
+    document.documentElement.style.setProperty('--inputf--background-color', lighterColor);
+    document.documentElement.style.setProperty('--like--text-color', darkerColor);
+    document.documentElement.style.setProperty('--line--border-color', darkerColor);
+    document.documentElement.style.setProperty('--line--background-color', darkerColor);
+    document.documentElement.style.setProperty('--list--background-color', lightestColor);
+
+    // Set custom theme attribute
+    document.documentElement.setAttribute('data-theme', 'custom');
+    localStorage.setItem('base-color', baseColor);
+}
+
+// Function to reset theme to default (remove custom theme)
+function resetThemeToDefault() {
+    document.documentElement.removeAttribute('data-theme');  // Remove data-theme
+    localStorage.removeItem('base-color');  // Remove base color from localStorage
+
+    // Optionally reset the color picker to default value
+    document.getElementById('base-color-picker').value = '#2196F3';
+
+    // Optionally reload the page if needed
+    window.location.reload();  // You can remove this if you want smoother transitions
+}
+
+// Function to load saved custom theme if any
+function loadSavedTheme() {
+    const savedColor = localStorage.getItem('base-color');
+    if (savedColor) {
+        setThemeColors(savedColor);
+        document.getElementById('base-color-picker').value = savedColor;
+    }
+}
+
+// Event listener for color picker change
+document.getElementById('base-color-picker').addEventListener('input', (event) => {
+    const baseColor = event.target.value;
+    setThemeColors(baseColor);
+});
+
+// Event listener for reset button
+document.getElementById('reset-theme-btn').addEventListener('click', resetThemeToDefault);
+
+// Load the saved theme (if any) on page load
+window.addEventListener('DOMContentLoaded', loadSavedTheme);
+</script>

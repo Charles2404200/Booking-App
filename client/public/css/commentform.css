@@ -1,0 +1,445 @@
+
+/* Comment Form Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+    z-index: 999;
+}
+
+/* Comment Form Container */
+.comment-form-main {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--sidebar--background-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    z-index: 1000;
+    width: 700px;
+    max-width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.comment-fix-pop{
+    top:50px;
+}
+
+.comment-form-container {
+    padding: 25px; /* Slightly more padding */
+}
+
+.post-display {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.post-header {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+}
+
+.post-user-avatar {
+    border-radius: 50%;
+    width: 45px; /* Slightly larger avatar */
+    height: 45px;
+    margin-right: 15px;
+}
+
+.post-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.post-user-name {
+    font-weight: bold;
+    font-size: 18px; /* Slightly larger font */
+}
+
+.post-timestamp {
+    font-size: 12px;
+    color: var( --like--text-color);
+    margin-top: 5px; /* Space between title and timestamp */
+    position: relative;
+    display: block;
+}
+
+/* Align the three dots under the timestamp in posts */
+.post-content {
+    margin-top: 12px;
+    color: var(--sidebar--text-color);
+}
+
+.post-image img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* Comment Items */
+.comment-item {
+    position: relative;
+    margin-bottom: 10px;
+    padding: 20px; /* More padding for clarity */
+}
+
+.comment-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--line--background-color); /* Slightly darker line */
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 7px; /* More spacing */
+}
+
+.comment-user-avatar {
+    width: 35px; /* Larger avatar */
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.comment-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-user-name {
+    font-weight: bold;
+    font-size: 14px; /* Larger font */
+    margin-right: 5px;
+    line-height: 1.3; /* Better spacing */
+}
+
+.comment-timestamp {
+    font-size: 12px;
+    color: var(--coal--text-color);
+}
+
+/* Center-align the three dots in comments */
+.comment-header i {
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.comment-text {
+    margin-top: 5px;
+    padding: 12px; /* More padding */
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    
+}
+.comment-text {
+    resize: none;  /* Disable manual resizing */
+    overflow: hidden;  /* Hide scrollbars, auto-expand the textarea */
+    box-sizing: border-box;
+    min-height: 50px;  
+}
+
+.comment-actions {
+    margin-top: 12px; /* More space */
+    font-size: 12px;
+    color: gray;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    /* Center align actions */
+}
+
+.comment-actions span {
+    margin-right: 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+    color: var(--like--text-color);
+}
+
+.comment-actions span:hover {
+    color: #007BFF;
+}
+
+/* Comment Replies */
+.comment-replies {
+    margin-left: -1px; /* Slight indentation for replies */
+    padding-left: 15px; /* Maintain padding */
+    border-left: 2px solid var(--line--border-color); /* Visual left border for nested replies */
+}
+
+/* Limit nested reply indentation */
+.comment-replies .comment-replies {
+    margin-left: 0px; /* No additional indentation for deeply nested replies */
+    padding-left: 20px; /* Maintain padding for clarity */
+}
+
+/* Disable unnecessary deep nesting line */
+.comment-replies .comment-item::before {
+    left: -10px;
+    background-color: transparent;
+}
+
+.comment-replies .comment-item:first-child::before {
+    top: 50%;
+}
+
+/* Highlight reply section */
+.reply-section {
+    background-color: #e7f3ff; /* Light blue background to highlight reply section */
+    border-left: 4px solid #007BFF; /* Blue border */
+    padding-left: 15px;
+    margin-bottom: 20px; /* Spacing from other comments */
+}
+
+/* Comment Form */
+.comment-form {
+    align-items: center; /* Aligns items in the center vertically */
+    border-top: 1px solid var(--line--border-color);
+    padding-top: 10px;
+    justify-content: space-between; /* Ensures the input box and icon are spaced out properly */
+}
+
+.comment-input {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Left-align to have the comment icon next to the input */
+    margin-top: 10px; /* Add some space on top */
+    margin-right: 10px; /* Provide spacing between input and comment icon */
+}
+.comment-input i {
+    font-size: 22px;
+    color: gray;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px; /* Add margin on the right for spacing */
+}
+.edit-comment-textarea {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    margin-top: 5px;
+    background-color: #f4f4f4;
+    transition: border-color 0.3s ease;
+}
+
+.edit-comment-textarea:focus {
+    border-color: #007BFF;
+    background-color: #fff;
+}
+
+/* Improved Cancel Button */
+.cancel-btn {
+    padding: 8px 15px;
+    background-color: #dc3545; /* Red background */
+    color: #fff;
+    border: none;
+    border-radius: 20px; /* Rounded button */
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Margin to provide spacing */
+    display: inline-block;
+    text-align: center;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}
+
+/* Cancel Button Alignment */
+.edit-buttons {
+    display: flex;
+    justify-content: flex-start; /* Align buttons to the left */
+    margin-top: 10px;
+}
+.comment-text {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid var( --hoteldash--border-color);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+    margin-right: 10px; /* Provides a gap between the input box and the icon */
+    background-color:var(--inputf--background-color);
+}
+
+.comment-options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Makes sure the icon is placed at the right */
+}
+
+.comment-options i {
+    font-size: 22px;
+    color: gray;
+    cursor: pointer;
+    transition: color 0.3s;
+    margin-left: auto; /* Automatically places the icon next to the input box */
+}
+
+.comment-options i:hover {
+    color: #007BFF;
+}
+
+/* Add spacing between the username and timestamp */
+.post-info {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.post-user-name {
+    font-weight: bold;
+    font-size: 16px; /* Adjusted for consistency */
+    margin-right: 5px;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .comment-item {
+        padding: 15px; /* Reduce padding for mobile */
+        margin-bottom: 10px; /* Reduce margin between comments */
+        width: 100%; /* Ensure comments take the full width */
+        max-width: 100%; /* Set max-width to prevent overflow */
+        box-sizing: border-box; /* Ensure padding is included in the width calculation */
+    }
+    
+    .comment-text {
+        padding: 10px; /* Slightly reduce padding in the comment text */
+        font-size: 13px; /* Reduce font size for mobile */
+        word-wrap: break-word; /* Ensure long words break to fit */
+        overflow-wrap: break-word; /* Allow line breaks to prevent overflow */
+        width: 100%; /* Ensure text takes the full width */
+        max-width: 100%; /* Set max-width to prevent overflow */
+        box-sizing: border-box; /* Include padding in the width calculation */
+    }
+
+    .comment-actions {
+        font-size: 11px; /* Smaller font for actions on mobile */
+        margin-top: 5px; /* Reduce margin for compact view */
+        width: 100%; /* Ensure actions take full width */
+        max-width: 100%; /* Prevent overflow */
+        box-sizing: border-box;
+    }
+
+    .comment-user-avatar {
+        width: 30px; /* Smaller avatars for mobile */
+        height: 30px;
+    }
+    
+    .comment-user-name {
+        font-size: 13px; /* Adjust username font size */
+    }
+
+    .comment-replies {
+        margin-left: 0; /* Remove extra indentation for mobile view */
+        padding-left: 10px; /* Reduce padding for replies */
+        border-left: none; /* Hide border on mobile for a cleaner look */
+        width: 100%; /* Ensure replies take up full width */
+        max-width: 100%; /* Prevent overflow */
+        box-sizing: border-box;
+    }
+
+    /* Ensure replies wrap and display properly */
+    .comment-replies .comment-item {
+        width: 100%; /* Ensure replies take the full width */
+        max-width: 100%; /* Prevent overflow */
+        padding-left: 0; /* Remove any extra padding */
+        box-sizing: border-box; /* Include padding in the width calculation */
+    }
+
+    /* Input and form adjustments for mobile */
+    .comment-form {
+        padding-top: 5px; /* Reduce padding for the form */
+        width: 100%; /* Ensure the form takes full width */
+        max-width: 100%; /* Prevent overflow */
+        box-sizing: border-box;
+    }
+
+    .comment-text {
+        padding: 8px 10px; /* Adjust padding for the input box */
+        font-size: 13px; /* Adjust font size */
+        width: 100%; /* Ensure input takes up full width */
+        max-width: 100%; /* Prevent overflow */
+        box-sizing: border-box;
+    }
+
+    .comment-options i {
+        font-size: 18px; /* Smaller icons for mobile */
+    }
+}
+.view-more {
+    color: #007BFF;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.view-more:hover {
+    text-decoration: underline;
+}
+.comment-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.comment-input-container i {
+    font-size: 22px;
+    color: gray;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.comment-input-container .comment-text {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+    overflow: auto;
+
+}
+
+.comment-input-container .comment-text:disabled {
+    background-color:var(--inputf--background-color);
+    border: 1px solid var( --hoteldash--border-color);
+}
+
+.cancel-btn {
+    padding: 8px 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+    display: inline-block;
+    text-align: center;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}

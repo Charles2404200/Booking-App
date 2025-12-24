@@ -1,0 +1,219 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<link rel="stylesheet" href="/css/profileupdate.css">
+
+<div class="user-profile" id="user-profile">
+  <h2>User Information</h2>
+  <%- include('./verifyswitch') %>
+  <span class="Update-Account">Update Account</span>
+  <button class="changeImg" onclick="openUpdateImg()">
+    <i class="fa-solid fa-image"></i> Change Avatar
+  </button>
+
+  <div class="nav-choose">
+    <!-- Name Update Section -->
+    <div id="nameSection" onclick="toggleSection('nameSection', 'nameForm')">
+      <div class="info-nav">
+        <span><%= user.fname %> <%= user.lname || 'Your Name' %></span>
+      </div>
+    </div>
+    <div id="nameForm" class="update-form" style="display: none;">
+      <div class="update-nav">
+        <h3>Update Name</h3>
+        <input type="text" name="fname" value="<%= user.fname %>" placeholder="First Name" required>
+        <input type="text" name="lname" value="<%= user.lname %>" placeholder="Last Name" required>
+        <div id="error-name-message" class="error-update-message" style="display: none;"></div>
+        <button class="submit-update-button" type="button" onclick="submitNameUpdate()">Update</button>
+        <button class="close-button" onclick="closeForm('nameForm', 'nameSection')">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Phone Update Section -->
+    <div id="phoneSection" onclick="toggleSection('phoneSection', 'phoneForm')">
+      <div class="info-nav">
+        <span><%= user.phone || 'Your Phone' %></span>
+      </div>
+    </div>
+    <div id="phoneForm" class="update-form" style="display: none;">
+      <div class="update-nav">
+        <h3>Update Phone</h3>
+        <input type="text" name="phone" value="<%= user.phone %>" required>
+        <div id="error-phone-message" class="error-update-message" style="display: none;"></div>
+        <button class="submit-update-button" type="button" onclick="submitPhoneUpdate()">Update</button>
+        <button class="close-button" onclick="closeForm('phoneForm', 'phoneSection')">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Email Update Section -->
+    <div id="emailSection" onclick="toggleSection('emailSection', 'emailForm')">
+      <div class="info-nav">
+        <span><%= user.email || 'Your Email' %></span>
+      </div>
+    </div>
+    <div id="emailForm" class="update-form" style="display: none;">
+      <div class="update-nav">
+        <h3>Update Email</h3>
+        <input type="email" name="email-update" value="<%= user.email %>" required>
+        <div id="error-email-message" class="error-update-message" style="display: none;"></div>
+        <button class="submit-update-button" type="button" onclick="submitEmailUpdate()">Update</button>
+        <button class="close-button" onclick="closeForm('emailForm', 'emailSection')">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Password Update Section -->
+    <div id="passwordSection" onclick="toggleSection('passwordSection', 'passwordForm')">
+      <div class="info-nav">
+        <span>••••••••</span>
+      </div>
+    </div>
+    <div id="passwordForm" class="update-form" style="display: none;">
+      <div class="update-nav">
+        <h3>Update Password</h3>
+        <input type="password" name="password-update" placeholder="New Password" required>
+        <input type="password" id="confirmUpdatePassword" name="confirmUpdatePassword" required placeholder="Confirm New Password">
+        <div id="error-password-message" class="error-update-message" style="display: none;"></div>
+        <button class="submit-update-button" type="button" onclick="submitPasswordUpdate()">Update</button>
+        <button class="close-button" onclick="closeForm('passwordForm', 'passwordSection')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Function to handle section toggle
+function toggleSection(sectionId, formId) {
+    const forms = ['nameForm', 'phoneForm', 'emailForm', 'passwordForm'];
+    const sections = ['nameSection', 'phoneSection', 'emailSection', 'passwordSection'];
+    
+    forms.forEach(form => document.getElementById(form).style.display = 'none');
+    sections.forEach(section => document.getElementById(section).style.display = 'block');
+
+    document.getElementById(formId).style.display = 'block';
+    document.getElementById(sectionId).style.display = 'none';
+}
+
+function closeForm(formId, sectionId) {
+    document.getElementById(formId).style.display = 'none';
+    document.getElementById(sectionId).style.display = 'block';
+}
+
+// Error message function
+function showErrorMessage(section, message) {
+    const errorMessage = document.getElementById(`error-${section}-message`);
+    errorMessage.innerText = message;
+    errorMessage.style.display = 'block';
+}
+
+// Validation functions for each field
+function validatePhone(phone) {
+    if (!/^\d+$/.test(phone)) {
+        showErrorMessage('phone', 'Phone number must contain only digits.');
+        return false;
+    }
+    return true;
+}
+
+function validateEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        showErrorMessage('email', 'Please enter a valid email address.');
+        return false;
+    }
+    return true;
+}
+
+function validatePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChars = /[!@#?$%^&*(),.?":{}|<>]/.test(password);
+    const hasInvalidChars = /[<>]/.test(password);  
+
+    if (password.length < minLength) {
+        showErrorMessage('password', 'Password must be at least 8 characters long.');
+        return false;
+    }
+    if (!hasUpperCase) {
+        showErrorMessage('password', 'Password must include at least one uppercase letter.');
+        return false;
+    }
+    if (!hasLowerCase) {
+        showErrorMessage('password', 'Password must include at least one lowercase letter.');
+        return false;
+    }
+    if (!hasNumbers) {
+        showErrorMessage('password', 'Password must include at least one number.');
+        return false;
+    }
+    if (!hasSpecialChars) {
+        showErrorMessage('password', 'Password must include at least one special character.');
+        return false;
+    }
+    if (hasInvalidChars) {
+        showErrorMessage('password', 'Password  include invalid characters.');
+        return false;
+    }
+
+    return true;
+}
+
+// Handle update for each section
+async function handleUpdate(userData) {
+    const userId = "<%= user._id %>";
+    try {
+        const response = await axios.put(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/users/${userId}`, userData, { withCredentials: true });
+        alert('Update successful!');
+        window.location.reload();
+    } catch (error) {
+        showErrorMessage('Failed to update user');
+    }
+}
+
+// Submit functions for each section
+function submitNameUpdate() {
+    const fname = document.querySelector('input[name="fname"]').value;
+    const lname = document.querySelector('input[name="lname"]').value;
+
+    if (fname && lname) {
+        handleUpdate({ fname: fname, lname: lname });
+    }
+}
+
+function submitPhoneUpdate() {
+    const phone = document.querySelector('input[name="phone"]').value;
+    if (validatePhone(phone)) {
+        handleUpdate({ phone: phone });
+    }
+}
+
+function submitEmailUpdate() {
+    const email = document.querySelector('input[name="email-update"]').value;
+   
+    if (validateEmail(email)) {
+        handleUpdate({ email: email });
+    }
+}
+
+function submitPasswordUpdate() {
+    const password = document.querySelector('input[name="password-update"]').value;
+    const confirmPassword = document.querySelector('input[name="confirmUpdatePassword"]').value;
+
+    // Check if both fields are not empty
+    if (!password || !confirmPassword) {
+        showErrorMessage("password", "Password and Confirm Password cannot be empty.");
+        return;
+    }
+
+    // Check if the passwords match
+    if (password !== confirmPassword) {
+        showErrorMessage("password", "Password and Confirm Password do not match.");
+        return;
+    }
+
+    // Validate password after confirming they match
+    if (validatePassword(password)) {
+        handleUpdate({ password: password });
+    }
+}
+</script>

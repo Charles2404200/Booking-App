@@ -1,0 +1,26 @@
+<link rel="stylesheet" href="/css/roomlist.css">
+
+<div class="room-list">
+    <% hotel.rooms.forEach((room,index) => { %>
+      <div class="room-card">
+        <div class="room-card-left">
+          <img src="/images/defaultroom<%= index %>.png" alt="<%= room.title %> Image" class="room-image" />
+          <div class="room-details">
+            <h3><%= room.title %></h3>
+            <p><%= room.maxPeople %> guests</p>
+            <ul class="room-amenities">
+              <li>Area: 18.0m²</li>
+              <li>No smoking</li>
+              <li>Shower</li>
+              <li>Hot water</li>
+            </ul>
+          </div>
+        </div>
+        <div class="room-card-right">
+          <h4><%= room.price %> USD/night</h4>
+          <p class="availability">Only <%= room.availableRooms %> rooms left!</p>
+          <button class="select-room-button" onclick="openBookingForm('<%= JSON.stringify(room) %>')">Select</button>
+        </div>
+      </div>
+    <% }) %>
+  </div>

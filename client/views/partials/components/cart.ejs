@@ -1,0 +1,39 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link rel="stylesheet" href="/css/cart.css">
+
+<div class="cart" onclick="handleClickCart()">
+    <i style="font-size:22px" class="fa">&#xf07a;</i>
+    <span id="bookingCount" class="cart-count">0</span>
+</div>
+
+<script>
+  const userId = '<%= user ? user._id : null %>';
+
+  document.addEventListener('DOMContentLoaded', async function fetchBookingCount() {
+    if (!userId) {
+      return;  // Exit if no user ID is found
+    }
+
+    try {
+      const response = await axios.get(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/bookings/user/${userId}`, { withCredentials: true });
+
+      const bookingCount = response.data.length;  // Get the count of bookings
+      document.getElementById('bookingCount').innerText = bookingCount;  // Update booking count in the cart UI
+
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+    }
+  });
+  const handleClickCart= ()=>{
+    const userStatus='<%= user ? user.status : null %>'
+    if(userStatus === "lock"){
+        alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+        handleLogout(); 
+    } else if(userStatus ==="disabled") {
+        window.location.href= '/profile?type=account';
+    } else{
+        window.location.href= '/profile?type=booking';
+
+    }
+  }
+</script>

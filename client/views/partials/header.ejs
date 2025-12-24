@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="/css/header.css">
+
+
+<div class="nav-bar">
+  <div class="logo">
+    <a href="/">
+      <div className="logo">
+        <img src="/images/airbnb.png" alt="Airbnb Logo" />     
+     </div>
+        </a>
+  </div>
+  
+  <div class="nav-items">
+ 
+    <%- include('./components/themeswitch') %>
+
+    <% if (user) { %>
+      <!-- Include your CartButton component here -->
+      <%- include('./components/cart') %>
+
+      <%- include('./components/cartbutton') %>
+    <% } %>
+    <ul>
+      <!-- Include your AccountButton component here -->
+      <%- include('./components/accountbutton') %>
+    </ul>
+  </div>
+</div>

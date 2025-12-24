@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="/css/profilepage.css">
+<div className="profile-page">
+    <%- include('../partials/components/userdashboard') %> 
+    <%- include('../partials/components/bookinglist') %> 
+<%- include('../partials/components/profileupdate') %> 
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const type = '<%= type %>'; // Get the query type from the server-side
+  
+      // Check query type and display booking list if type is 'booking'
+      if (type === 'booking') {
+        document.getElementById('bookings-list').style.display = 'block';
+        document.getElementById('user-profile').style.display = 'none';
+
+      } else {
+        document.getElementById('bookings-list').style.display = 'none';
+        document.getElementById('user-profile').style.display = 'block';
+
+      }
+    });
+  </script>

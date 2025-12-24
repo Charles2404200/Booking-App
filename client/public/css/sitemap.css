@@ -1,0 +1,46 @@
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--background-color); /* Use background-color variable */
+    border: 1px solid var(--nav-background-border-color); /* Use border color variable */
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--text-color); /* Use text color variable */
+}
+
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    color: var(--text-color); /* Use text color variable */
+}
+
+ul ul {
+    list-style-type: circle;
+    margin-left: 20px;
+    color: var(--text-color); /* Use text color variable */
+}
+
+ul ul ul {
+    list-style-type: square;
+    margin-left: 20px;
+    color: var(--text-color); /* Use text color variable */
+}
+
+ul li {
+    margin-bottom: 8px;
+    text-decoration: none;
+}
+
+ul li a {
+    text-decoration: none;
+    color: var(--attractive-titles--text-color); /* Use link color variable */
+}
+
+ul li a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,127 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<link rel="stylesheet" href="/css/login.css">
+
+<div class="login-modal" id="Login">
+    <div class="login-overlay"></div>
+
+    <div class="login-container">
+        <!-- Close Button -->
+        <button class="close-btn" onclick="closeLogin()">X</button>
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="text" name="username" placeholder="Username" required />
+            <input type="password" name="password" placeholder="Password" required />
+            <div class="g-recaptcha" data-sitekey="6Lf9nyYqAAAAAL_GhF8yS3rXR1ZDsOYhB-yeP1eX"
+                data-callback="enableSubmit"></div>
+
+            <p class="error-login-message"></p>
+            <% if (error) {%>
+                <p>
+                    <%= error %>
+                </p>
+                <% } %>
+                    <button type="submit" id="submit-button" disabled>Login</button>
+        </form>
+
+        <!-- Google Sign-In Button -->
+        <div class="google-signin-btn" onclick="openGoogleAuth()">
+            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20" />
+            Sign in with Google
+        </div>
+
+        <!-- Extra Links -->
+        <div class="extra-links">
+            <div onclick="openForgot()">Forgot Password?</div>
+            <span>Or</span>
+            <div onclick="openRegister()">Create New Account</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    async function handleLogin(username, password) {
+        const submitButton = document.getElementById('submit-button');
+        const recaptchaResponse = grecaptcha.getResponse(); // Get the reCAPTCHA response token
+        const path = window.location.href;
+        if (!recaptchaResponse) {
+            document.querySelector('.error-login-message').innerText = 'Please complete the CAPTCHA';
+            return;
+        }
+
+        try {
+            submitButton.innerText = 'Logging in...';
+            submitButton.disabled = true;
+
+            const response = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/auth/login', {
+                username,
+                password,
+                recaptchaResponse
+            }, 
+            {
+                withCredentials: true  // This ensures that cookies are sent/received
+            });
+            const token = response.data.token;  
+            document.cookie = `access_token=${token}; path=/; max-age=${24 * 60 * 60}; secure=true; sameSite=None`;
+            console.log('Response Data:', response.data);
+            const userStatus = response.data.status;
+            if (userStatus === "lock") {
+                alert("Your account got locked. Please mail to my business email to ask for activating your account.");
+                handleLogout();
+            }
+
+            const isAdmin = response.data.isAdmin;
+            // Get access token cookie if available
+            const accessToken = getCookie('access_token');
+
+            window.location.href = isAdmin ? '/admin' : path;
+        } catch (error) {
+            const errorMessage = error.response && error.response.data && error.response.data.message
+                ? error.response.data.message
+                : error.message || 'Login failed';
+
+            document.querySelector('.error-login-message').innerText = errorMessage;
+        } finally {
+            submitButton.innerText = 'Login';
+            submitButton.disabled = false;
+        }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.querySelector('input[name="username"]').value;
+        const password = document.querySelector('input[name="password"]').value;
+        handleLogin(username, password);
+    });
+
+    function enableSubmit() {
+        const submitButton = document.getElementById('submit-button');
+        submitButton.disabled = false;
+    }
+
+    function openGoogleAuth() {
+  const popup = window.open('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/auth/google', 'GoogleLogin', 'width=600,height=600');
+
+  window.addEventListener('message', (event) => {
+    if (event.origin !== 'https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com') {
+      // Ignore messages from unknown origins
+      return;
+    }
+
+    const { token } = event.data;
+    if (token) {
+      // Store the token (you can use a cookie )
+      document.cookie = `access_token=${token}; path=/; max-age=${24 * 60 * 60}; secure=true; sameSite=None`;
+
+      window.location.reload();  
+    }
+  });
+   };
+
+
+</script>

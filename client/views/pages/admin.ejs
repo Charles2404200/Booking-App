@@ -1,0 +1,84 @@
+<link rel="stylesheet" href="/css/admin.css">
+<div className="admin-app">
+    <%- include('../partials/components/admindashboard') %>
+    <div className="content">
+            <%- include('../partials/components/usertable') %>
+            <%- include('../partials/components/posttable') %>
+         
+
+    </div>
+
+</div>
+<%- include('../partials/components/createuserform')  %>
+
+
+<script>
+    const rowsPerPage = 10; // Set the number of rows per page
+
+    // For user table pagination
+    let currentUserPage = 1;
+    const userTableBody = document.getElementById('table-body'); // Assuming this is for user table
+    let totalUserRows = userTableBody.querySelectorAll('tr').length;
+    let totalUserPages = Math.ceil(totalUserRows / rowsPerPage);
+
+    function renderUserTable() {
+        const startRow = (currentUserPage - 1) * rowsPerPage;
+        const endRow = startRow + rowsPerPage;
+
+        userTableBody.querySelectorAll('tr').forEach((row, index) => {
+            row.style.display = (index >= startRow && index < endRow) ? 'table-row' : 'none';
+        });
+
+        document.getElementById('prevUserPage').disabled = currentUserPage === 1;
+        document.getElementById('nextUserPage').disabled = currentUserPage === totalUserPages || totalUserPages === 0;
+    }
+
+    function changeUserPage(direction) {
+        if ((direction === -1 && currentUserPage > 1) || (direction === 1 && currentUserPage < totalUserPages)) {
+            currentUserPage += direction;
+            renderUserTable();
+        }
+    }
+
+    // For post table pagination
+    let currentPostPage = 1;
+    const postTableBody = document.getElementById('post-table-body'); // Assuming this is for post table
+    let totalPostRows = postTableBody.querySelectorAll('tr').length;
+    let totalPostPages = Math.ceil(totalPostRows / rowsPerPage);
+
+    function renderPostTable() {
+        const startRow = (currentPostPage - 1) * rowsPerPage;
+        const endRow = startRow + rowsPerPage;
+
+        postTableBody.querySelectorAll('tr').forEach((row, index) => {
+            row.style.display = (index >= startRow && index < endRow) ? 'table-row' : 'none';
+        });
+       
+        document.getElementById('prevPostPage').disabled = currentPostPage <= 1;
+        document.getElementById('nextPostPage').disabled = currentPostPage === totalPostPages || totalPostPages === 0;
+    }
+
+    function changePostPage(direction) {
+        if ((direction === -1 && currentPostPage > 1) || (direction === 1 && currentPostPage < totalPostPages)) {
+            currentPostPage += direction;
+            renderPostTable();
+        }
+    }
+
+    // Initial render for both tables
+    renderUserTable();
+    renderPostTable();
+
+    // If rows are dynamically added/removed, call this to update the total count
+    function updateTotalUserRows() {
+        totalUserRows = userTableBody.querySelectorAll('tr').length;
+        totalUserPages = Math.ceil(totalUserRows / rowsPerPage);
+        renderUserTable();
+    }
+
+    function updateTotalPostRows() {
+        totalPostRows = postTableBody.querySelectorAll('tr').length;
+        totalPostPages = Math.ceil(totalPostRows / rowsPerPage);
+        renderPostTable();
+    }
+</script>

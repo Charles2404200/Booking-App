@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="/css/admindashboard.css">
+<div class="sidebar">
+    <h3>Admin Dashboard</h3>
+    <a class="admin-profile" href="/profile">
+        <img src="<%= user.img ? user.img : '/images/clone.png' %>" alt="User Avatar" class="user-avatar">
+        <span class="user-name"><%= user ? user.username : 'User Name' %></span>
+    </a>
+    <ul class="admin-menu">
+        <li onclick="showTable('user')"><i class="fas fa-users"></i>Users Management</li>
+        <li onclick="showTable('post')"><i class="fas fa-file-alt"></i>Posts Management</li>
+        <li><i class="fas fa-sign-out-alt"></i>
+            <a href="/" onclick="handleLogout()" class="logout-link">Logout</a> <!-- Added class "logout-link" -->
+        </li>
+    </ul>
+</div>
+<script>
+      
+
+
+function showTable(tableType) {
+
+    if (tableType === 'user') {
+        // Show the user table
+        document.querySelector('.User-Table').style.display = 'block';
+        document.querySelector('.Post-Table').style.display = 'none';
+
+    } else if (tableType === 'post') {
+        // Show the post table
+        document.querySelector('.Post-Table').style.display = 'block';
+        document.querySelector('.User-Table').style.display = 'none';
+
+    }
+}
+
+</script>

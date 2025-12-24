@@ -1,0 +1,636 @@
+<link rel="stylesheet" href="/css/postcardlist.css">
+<link rel="stylesheet" href="/css/commentform.css">
+<%
+function escapeForJsString(str) {
+    return str.replace(/\\/g, '\\\\')  // Escape backslashes first
+              .replace(/'/g, '\\\'')    // Escape single quotes
+              .replace(/"/g, '\\"')     // Escape double quotes
+              .replace(/\n/g, '\\n')    // Escape newlines
+              .replace(/\r/g, '\\r')    // Escape carriage returns
+              .replace(/</g, '\\x3C')   
+              .replace(/>/g, '\\x3E');  // Escape `>` to prevent HTML injection
+}
+%>
+<div id="post-cards-container">
+    <% posts.forEach(post => { %>
+        <div class="post-card" id="post-card-<%= post._id %>">
+            <div class="post-header">
+                <div class="post-info">
+                    <img src="<%= post.user ? post.user.img : '/images/clone.png' %>" alt="User Avatar" class="user-avatar">
+                </div>
+               
+                <div class="user-details-container">
+                    <div class="user-details">
+                        <span class="user-name"><%= post.user ? post.user.username : 'clone' %></span>
+                        <span class="post-timestamp"><%= new Date(post.timestamp).toLocaleString() %></span>
+                    </div>
+                    <% if (user && user._id === (post.user ? post.user._id : '') && user.status !== 'disabled') { %>
+                        <i class="fa fa-ellipsis-h" onclick="openDeleteAndUpdate('<%= post._id %>')"></i>
+                        <div id="Delete-Update-<%= post._id %>" class="fix-pop" style="display: none;">
+                            <div class="delete-post" onclick="handleDeletePost('<%= post._id %>', '<%= post.img %>')">Xoá</div>
+                            <div class="update-post" onclick="openEditPost('<%= post._id %>', '<%= escapeForJsString(post.text) %>','<%= escapeForJsString(post.title) %>','<%= post.img %>')">Chỉnh sửa</div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="post-title-container">
+                <span class="post-title"><%= post.title %></span>
+            </div>
+            <div class="post-content">
+                <p><%= post.text %></p>
+            </div>
+            <% if (post.img) { %>
+                <div class="post-image">
+                    <img src="<%= post.img %>" alt="Post Image">
+                </div>
+            <% } %>
+            <span id="like-count-post-<%= post._id %>">
+                <%= post.likes %> <i class="fas fa-thumbs-up"></i>
+            </span>
+            <span id="comment-count">
+                <%= countCommentsAndReplies(post.comments) %> comments
+            </span>
+            <div class="post-footer">
+                <span onclick="handleLikePost('<%= post._id %>')">Like</span>
+                <span onclick="openCommentForm('<%= post._id %>','<%= escapeForJsString(JSON.stringify(post)) %>','<%= escapeForJsString(JSON.stringify(user)) %>')">Comment</span>
+            </div>
+            <div id="comment-<%= post._id %>">
+                <!-- CommentForm will be injected here when openCommentForm is clicked -->
+            </div>
+        </div>
+    <% }) %>
+</div>
+<script>
+
+ 
+
+    const openEditPost = async (postId,postText,postTitle, postImg) => {
+        const deleteAndUpdate = document.getElementById(`Delete-Update-${postId}`);
+        deleteAndUpdate.style.display = 'none';
+        console.log();
+        openPostForm(postId, postText, postTitle,postImg );
+}
+
+
+const handleEditComment = async (commentId) => {
+    const input = document.getElementById(`input-${commentId}`);
+    try {
+        const res = await axios.put(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/comments/${commentId}`, 
+        {
+            text: input.value
+        }, 
+        {
+            withCredentials: true
+        });
+        const newText = res.data.text;
+        // If the request is successful, reload the page to show the updated comment
+        if (res.status ===200){
+        input.value = newText;
+            closeEditComment(commentId);
+    }
+        // Corrected reload method
+    } catch (error) {
+        console.error('Error updating comment:', error);
+
+// Improved error handling
+if (error.response && error.response.status === 403) {
+    alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+    handleLogout(); 
+} else {
+    alert('Failed to updating comment. Please try again.');
+}
+    }
+}
+const openEditComment = (commentId) => {
+    const pElement = document.getElementById(`input-${commentId}`);
+    const icon = document.getElementById(`icon-edit-${commentId}`);
+    const deleteAndUpdate = document.getElementById(`Comment-Delete-Update-${commentId}`);
+    const close = document.getElementById(`close-edit-${commentId}`);
+
+    deleteAndUpdate.style.display = 'none';
+
+    // Get the current text from the <p> element
+    const currentText = pElement.innerText;
+
+    // Create a <textarea> element to replace the <p>
+    const textarea = document.createElement('textarea');
+    textarea.value = currentText;  // Set the value to the current comment text
+    textarea.id = `input-${commentId}`;  // Keep the same id
+    textarea.className = pElement.className;  // Keep the same class(es)
+
+    // Replace the <p> element with the <textarea>
+    pElement.replaceWith(textarea);
+
+    icon.style.display = 'block';
+    close.style.display = 'block';
+};
+
+const closeEditComment = (commentId, updatedText = null) => {
+    const textarea = document.getElementById(`input-${commentId}`);
+    const icon = document.getElementById(`icon-edit-${commentId}`); 
+    const close = document.getElementById(`close-edit-${commentId}`);
+
+    // Create a <p> element to replace the <textarea>
+    const pElement = document.createElement('p');
+    pElement.id = `input-${commentId}`;  // Keep the same id
+    pElement.className = textarea.className;  // Keep the same class(es)
+    
+    // Set the <p> inner text to either the updated comment or the original text
+    pElement.innerText = updatedText ? updatedText : textarea.value;
+
+    // Replace the <textarea> with the <p> element
+    textarea.replaceWith(pElement);
+
+    // Hide the edit and close icons
+    icon.style.display = 'none';
+    close.style.display = 'none';
+};
+    const openDeleteAndUpdateComment = (commentId) => {
+        const deleteAndUpdate = document.getElementById(`Comment-Delete-Update-${commentId}`);
+        if (deleteAndUpdate.style.display === 'none' || deleteAndUpdate.style.display === '') {
+            deleteAndUpdate.style.display = 'block';
+        } else {
+            deleteAndUpdate.style.display = 'none';
+        }
+    }
+
+    const openDeleteAndUpdate = (postId) => {
+        const deleteAndUpdate = document.getElementById(`Delete-Update-${postId}`);
+        if (deleteAndUpdate.style.display === 'none' || deleteAndUpdate.style.display === '') {
+            deleteAndUpdate.style.display = 'block';
+        } else {
+            deleteAndUpdate.style.display = 'none';
+        }
+    };
+    function openCommentForm(postId, postData, userData) {
+        console.log('open');
+        const commentFormContainer = document.getElementById(`comment-${postId}`);
+        const post = JSON.parse(postData);
+        const user = JSON.parse(userData);
+        if (!user){
+            openLogin();
+        }
+        else if (user && user.status === 'disabled') {
+            if (confirm("You are disabled. Please active your account in profile.")) {
+                window.location.href = '/profile'
+            };
+
+        } else
+            if (user) {
+                if (!document.querySelector(`#Comment-Form-${postId}`)) {
+                    const commentFormHTML = `
+            <div id="overlay" class="overlay" style="display: none;"></div>
+
+                <div id="Comment-Form-${postId}" class="comment-form-main">
+                    <div class="comment-form-container">
+                        <div class="post-display">
+                            <div class="post-header">
+                                <img src="${post.user ? post.user.img : '/images/clone.png' }" alt="User Avatar" class="post-user-avatar">
+                                 <div class="post-info">
+                                    <div>
+                                        <span class="post-user-name">${post.user? post.user.username :'clone'}</span>
+                                        <span class="post-timestamp">${new Date(post.timestamp).toLocaleString()}</span>
+                                    </div>
+                                    
+                                    <div class="close-post-button" onclick="closeCommentForm('${postId}')">
+                                        <i class="fas fa-times"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-title-container">
+                                <span class="post-title">${post.title}</span>
+                            </div>
+                            <div class="post-content">
+                                <p>${post.text}</p>
+                                ${post.img ? `<div class="post-image"><img src="${post.img}" alt="Post Image"></div>` : ''}
+                                  <span id="like-count-post-${post._id}">
+                 ${post.likes}  <i class="fas fa-thumbs-up"></i>
+            </span>
+            <span id="comment-count">
+               ${countCommentsAndReplies(post.comments)} comments
+            </span>
+                            </div>
+                        </div>
+                        <div class="Comment-List"></div>
+                        <div class="comment-form">
+                            <div class="comment-input">
+                                <img src="${user &&user.img? user.img:'/images/clone.png'}" alt="User Avatar" class="user-avatar">
+                                <input type="text" class="comment-text" placeholder="Viết bình luận..." id="commentInput-${postId}">
+                                <div class="comment-options">
+                                <i class="fas fa-commenting" onclick="handleComment('${postId}')"></i>
+                            </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            `;
+                    commentFormContainer.innerHTML = commentFormHTML;
+                    renderCommentList(post.comments, user, postId);
+                }
+                const overlay = document.getElementById('overlay');
+                overlay.style.display = 'block';
+                const formElement = document.getElementById(`Comment-Form-${postId}`);
+                formElement.style.display = 'block';
+            }
+
+
+           
+    }
+    function closeCommentForm(postId) {
+        const overlay = document.getElementById('overlay');
+        const commentForm = document.getElementById(`Comment-Form-${postId}`);
+        overlay.style.display = 'none';
+        commentForm.style.display = 'none';
+    }
+
+    async function handleComment(postId) {
+        const commentInput = document.getElementById(`commentInput-${postId}`);
+        const commentText = commentInput.value.trim();
+        const userId = '<%= user ? user._id: null %>'
+        if (!commentText) {
+            alert('Vui lòng nhập bình luận.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/comments', {
+                postId,
+                user: userId,
+                text: commentText
+            }, {
+                withCredentials: true
+            });
+
+               // Check if the request was successful
+        if (response.status === 201) {
+            // Create the new comment HTML element
+            const newComment = response.data;
+            const user = response.data.user // Assuming the response contains the new comment data
+            const commentList = document.querySelector(`#Comment-Form-${postId} .Comment-List`);
+
+            // Generate the HTML for the new comment
+            const commentHTML = renderComment(newComment, user);
+
+            // Append the new comment to the comment list
+            commentList.innerHTML += commentHTML;
+
+            // Clear the input field after posting the comment
+            commentInput.value = '';
+
+        } else {
+            alert('Failed to create the comment. Please try again.');
+        }
+        } catch (error) {
+            console.error('Error commenting post:', error);
+
+// Improved error handling
+if (error.response && error.response.status === 403) {
+    alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+    handleLogout(); 
+} else {
+    alert('Failed to comment post. Please try again.');
+}
+        }
+    }
+
+    async function handleReply(commentId) {
+    const replyInput = document.getElementById(`replyInput-${commentId}`);
+    const replyText = replyInput.value.trim();
+
+    if (!replyText) {
+        alert('Please enter comment.');
+        return;
+    }
+
+    try {
+        const userId = '<%= user ? user._id : null %>';
+
+        const response = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/comments/reply', {
+            user: userId,
+            text: replyText,
+            parentComment: commentId
+        }, {
+            withCredentials: true
+        });
+
+        if (response.status === 201) {
+            // Create the new reply HTML element
+            const newReply = response.data;
+            const user = newReply.user;
+
+            // Find the parent comment's reply section
+            let replyList = document.querySelector(`#replies-${commentId}`);
+            let toggleRepliesButton = document.getElementById(`toggle-replies-${commentId}`);
+
+            // Generate the HTML for the new reply
+            const replyHTML = renderComment(newReply, user);
+
+            // Append the new reply to the reply list
+            if (replyList) {
+                replyList.innerHTML += replyHTML;
+            } else {
+                // Create the reply list if it doesn't exist yet
+                const parentComment = document.getElementById(`comment-item-${commentId}`);
+                const newReplyContainer = document.createElement('div');
+                newReplyContainer.id = `replies-${commentId}`;
+                newReplyContainer.className = 'comment-replies';
+                newReplyContainer.innerHTML = replyHTML;
+                parentComment.appendChild(newReplyContainer);
+
+                // Create toggle button if it doesn't exist
+                if (!toggleRepliesButton) {
+                    const commentActions = document.querySelector(`#comment-item-${commentId} .comment-actions`);
+                    toggleRepliesButton = document.createElement('span');
+                    toggleRepliesButton.id = `toggle-replies-${commentId}`;
+                    toggleRepliesButton.style.display = 'block';
+                    toggleRepliesButton.className = 'toggle-replies';
+                    toggleRepliesButton.innerText = 'Hidden replies';
+                    toggleRepliesButton.onclick = () => toggleReplies(commentId);
+                    commentActions.appendChild(toggleRepliesButton);
+                }
+            }
+
+            // Clear the input field after posting the reply
+            replyInput.value = '';
+            document.querySelector(`#Reply-Form-${commentId}`).style.display = 'none';
+
+            // Ensure the toggle button shows "Hidden replies"
+            toggleRepliesButton.textContent = `Hidden replies`;
+            replyList.style.display = 'block'; // Show the replies immediately after adding the new one
+
+        } else {
+            alert('Failed to create the reply. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error replying to comment:', error);
+
+        if (error.response && error.response.status === 403) {
+            alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+            handleLogout(); 
+        } else {
+            alert('Failed to reply to comment. Please try again.');
+        }
+    }
+}
+    function renderComment(comment, user) {
+    let isDisabled = (comment.user && comment.user._id !== user._id) ? 'none' : 'block';
+    let replyCount = comment.replies.length;
+    let isExistReply = comment.replies.length === 0 ? 'none' : 'block';
+    let commentUserName = comment.user ? comment.user.username : 'clone';
+    let commentUserImg = comment.user ? comment.user.img : '/images/clone.png';
+
+    let commentHTML = `
+        <div class="comment-item" id="comment-item-${comment._id}">
+            <div class="comment-header">
+                <img src="${commentUserImg ? commentUserImg :'/images/clone.png'}" alt="User Avatar" class="comment-user-avatar">
+                <div class="comment-info">
+                    <span class="comment-user-name">${commentUserName}</span>
+                    <span class="comment-timestamp">${new Date(comment.createdAt).toLocaleString()}</span>
+                </div>
+                <i class="fa fa-ellipsis-h" onclick="openDeleteAndUpdateComment('${comment._id}')" style="display:${isDisabled};"></i>
+                <div id="Comment-Delete-Update-${comment._id}" class="fix-pop comment-fix-pop" style="display: none;">
+                    <div class="delete-post" onclick="handleDeleteComment('${comment._id}')">Delete</div>
+                    <div class="update-post" onclick="openEditComment('${comment._id}')">Edit</div>
+                </div>
+            </div>
+            <div>
+                <div class="comment-input-container">
+                    <p class="comment-text" id="input-${comment._id}">${comment.text}</p>
+                    <i class="fas fa-commenting" id="icon-edit-${comment._id}" onclick="handleEditComment('${comment._id}')" style="display: none;"></i>
+                </div>
+                <p id="close-edit-${comment._id}" class="cancel-btn" onclick="closeEditComment('${comment._id}')" style="display: none;">Cancel</p>
+            </div>
+            <div class="comment-actions">
+                <span onclick="handleLike('${comment._id}','${user._id}')">Like</span>
+                <span onclick="openReplyForm('${comment._id}')">Reply</span>
+                <span id="toggle-replies-${comment._id}" class="toggle-replies" onclick="toggleReplies('${comment._id}', ${replyCount})" style="display:${isExistReply};">
+                    Show more replies
+                </span>
+                <span id="like-count-${comment._id}">${comment.likes} <i class="fas fa-thumbs-up"></i></span>
+            </div>
+            <div id="replies-${comment._id}" class="comment-replies">
+                ${renderReplies(comment.replies, user, comment._id)}
+            </div>
+            <div id="Reply-Form-${comment._id}" class="reply-form" style="display: none;">
+                <div class="comment-input">
+                    <img src="${user && user.img ? user.img : '/images/clone.png'}" alt="User Avatar" class="user-avatar">
+                    <input type="text" class="comment-text" placeholder="Write a reply..." id="replyInput-${comment._id}">
+                    <i class="fas fa-commenting" onclick="handleReply('${comment._id}', '${user._id}')"></i>
+                </div>
+            </div>
+        </div>`;
+    return commentHTML;
+}
+function renderReplies(replies, user, commentId) {
+    
+    let replyHTML = '';
+    if (replies.length > 2) {
+        // Only show the first 2 replies
+        for (let i = 0; i < 2; i++) {
+            replyHTML += renderComment(replies[i], user);
+        }
+        replyHTML += `
+            <div id="remaining-replies-${commentId}" style="display: none;">
+                ${replies.slice(2).map(reply => renderComment(reply, user)).join('')}
+            </div>
+            <div class="view-more" onclick="toggleMoreReplies('${commentId}')">More replies</div>
+        `;
+    } else {
+        replyHTML = replies.map(reply => renderComment(reply, user)).join('');
+    }
+    return replyHTML;
+}
+function toggleReplies(commentId, replyCount) {
+        const repliesContainer = document.getElementById(`replies-${commentId}`);
+        const toggleButton = document.getElementById(`toggle-replies-${commentId}`);
+        
+        if (repliesContainer.style.display === 'none' || repliesContainer.style.display === '') {
+            repliesContainer.style.display = 'block';  // Show replies
+            toggleButton.textContent = `Hidden replies`;  // Change button to minus with reply count
+        } else {
+            repliesContainer.style.display = 'none';  // Hide replies
+            toggleButton.textContent = `Show more replies`;  // Change button to plus with reply count
+        }
+    }
+function toggleMoreReplies(commentId) {
+    const remainingReplies = document.getElementById(`remaining-replies-${commentId}`);
+    const viewMoreButton = document.querySelector(`#comment-item-${commentId} .view-more`);
+    
+    if (remainingReplies.style.display === 'none') {
+        remainingReplies.style.display = 'block';
+        viewMoreButton.textContent = 'Thu gọn phản hồi';
+    } else {
+        remainingReplies.style.display = 'none';
+        viewMoreButton.textContent = 'Xem thêm phản hồi';
+    }
+}
+  
+
+    function renderCommentList(comments, user, postId) {
+        const commentList = document.querySelector(`#Comment-Form-${postId} .Comment-List`);
+
+        if (Array.isArray(comments)) {
+            comments.forEach(comment => {
+                const commentHTML = renderComment(comment, user);
+                commentList.innerHTML += commentHTML;
+            });
+        } else {
+            console.error("Expected an array of comments but received something else.");
+        }
+    }
+    function openReplyForm(commentId) {
+        const replyForm = document.getElementById(`Reply-Form-${commentId}`);
+        replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+    }
+    async function handleDeletePost(postId, postImg) {
+        const userStatus = '<%= user && user.status %>'
+        if (userStatus === "disabled") {
+            if (confirm("You are disabled. Please active your account in profile.")) {
+                window.location.href = '/profile'
+            };
+        }
+        else if (confirm('Are you sure you want to delete this post?')) {
+            try {
+                // Delete the post from the database
+                const response = await axios.delete(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/posts/${postId}`, {
+                    withCredentials: true
+                });
+
+                if (response.status === 200) {
+                    alert('Post deleted successfully!');
+                    const postCard = document.getElementById(`post-card-${postId}`);
+                    postCard.remove();
+                    // If postImg exists and is not empty, proceed to delete the image
+                    if (postImg && postImg.includes('https://pub-93b162f2c2324969b45e28374787425b.r2.dev/')) {
+                        const res =    await axios.post(`/post-img?postImg=${postImg}`, {imageFile:null}, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    withCredentials: true,
+                });
+
+                        if (res.status !== 200) {
+                            alert('Failed to delete the image. Please try again.');
+                        }
+                    }
+
+                  
+                } else {
+                    alert('Failed to delete post. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error deleting post:', error);
+
+// Improved error handling
+if (error.response && error.response.status === 403) {
+    alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+    handleLogout(); 
+} else {
+    alert('Failed to deleting post. Please try again.');
+}
+            }
+        }
+    }
+    async function handleDeleteComment(commentId) {
+        try {
+            // Show a confirmation alert before deleting
+            const confirmDeletion = confirm('Are you sure you want to delete this comment? This action cannot be undone.');
+
+            if (confirmDeletion) {
+                // Make the DELETE request to the backend API
+                const response = await axios.delete(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/comments/${commentId}`, {
+                    withCredentials: true // Include this if your API requires authentication cookies
+                });
+
+                // Check if the request was successful
+                if (response.status === 200) {
+                    // Remove the comment from the DOM
+                    const commentElement = document.getElementById(`comment-item-${commentId}`);
+                commentElement.remove();
+                } else {
+                    alert('Failed to delete the comment. Please try again.');
+                }
+            } else {
+                // User canceled the deletion
+                console.log('Deletion canceled by the user.');
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+
+// Improved error handling
+if (error.response && error.response.status === 403) {
+    alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+    handleLogout(); 
+} else {
+    alert('Failed to deleting comment. Please try again.');
+}
+        }
+    }
+
+    const handleLike = async (commentId, userId) => {
+
+        try {
+            const response = await axios.put(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/comments/likes/${commentId}`, { userId: userId }, { withCredentials: true });
+            const likes = response.data.likes;
+            const likeCountElement = document.querySelector(`#like-count-${commentId}`);
+            if (likeCountElement) {
+                likeCountElement.innerHTML = `${likes} <i class="fas fa-thumbs-up"></i>`;
+            }
+        } catch (error) {
+            console.error('Error like comment:', error);
+
+// Improved error handling
+if (error.response && error.response.status === 403) {
+    alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+    handleLogout(); 
+} else {
+    alert('Failed to like comment. Please try again.');
+}        }
+
+    };
+    const handleLikePost = async (postId) => {
+
+        const userId = '<%= user && user._id %>';
+        const userStatus = '<%= user && user.status %>'
+        if (userId === '') {
+            openLogin();
+        } else if (userStatus === 'disabled') {
+            if (confirm("You are disabled. Please active your account in profile.")) {
+                window.location.href = '/profile'
+            };
+        }
+
+
+
+        else {
+            try {
+                const response = await axios.put(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/posts/likes/${postId}`, { userId: userId }, { withCredentials: true });
+                const likes = response.data.likes;
+                const likeCountElement = document.querySelector(`#like-count-post-${postId}`);
+                if (likeCountElement) {
+                    likeCountElement.innerHTML = `${likes} <i class="fas fa-thumbs-up"></i>`;
+                }
+            } catch (error) {
+                console.error('Error like post:', error);
+
+// Improved error handling
+if (error.response && error.response.status === 403) {
+    alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+    handleLogout(); 
+} else {
+    alert('Failed to like post. Please try again.');
+}            }
+        }
+    };
+    function countCommentsAndReplies(comments) {
+        let total = 0;
+        comments.forEach(comment => {
+            total += 1; // Count the comment itself
+            if (comment.replies && Array.isArray(comment.replies)) {
+                total += comment.replies.length; // Add the number of replies
+            }
+        });
+        return total;
+    }
+</script>

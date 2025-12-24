@@ -1,0 +1,214 @@
+/* General Table Styles */
+.data-grid {
+    width: 75%; /* Set the width to 70% of its container */
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-left: auto; /* Push the table to the right */
+    margin-right: 10px; /* Add a margin to move the table slightly inward from the right */
+    background-color:var(--sidebar--background-color); /* White background for the entire table */
+    border-radius: 10px; /* Rounded corners for the table */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow-x: scroll; /* Add horizontal scrolling if needed */
+}
+
+.data-grid table {
+    width: 100%; /* Make sure the table fills the container */
+    border-collapse: collapse; /* Ensure no space between table borders */
+}
+
+.data-grid th, .data-grid td {
+    background-color: var(--sidebar--background-color);
+    padding: 25px; /* Increase padding for a larger, more spaced-out table */
+    text-align: left;
+    border-bottom: 1px solid #dddddd; /* Light gray line between rows */
+}
+
+.data-grid th { 
+    background-color: #ff9946; /* Orange background for the header */
+    font-weight: bold;
+    color: #ffffff; /* White text for the header */
+    text-align: left;
+    border-bottom: 2px solid #ff9946; /* Stronger line under the header */
+}
+
+.data-grid tr {
+    background-color:var(--sidebar--background-color); /* White background for rows */
+    border-bottom: 1px solid #dddddd; /* Light gray line separating each account */
+}
+
+.data-grid tr:nth-child(even) {
+    background-color: var(--sidebar--background-color); /* Slightly off-white background for even rows */
+}
+
+.data-grid tr:hover {
+    background-color: var( --sidebar--hover-color); /* Light gray on hover */
+}
+
+.data-grid tr:last-child td {
+    border-bottom: none; /* Remove the bottom border from the last row */
+}
+
+/* Image Styles */
+.user-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Status Select Dropdown */
+.data-grid select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+/* Status Colors */
+.data-grid select option[value="active"] {
+    color: green;
+    font-weight: bold;
+}
+
+.data-grid select option[value="disabled"] {
+    color: orange;
+    font-weight: bold;
+}
+
+.data-grid select option[value="lock"] {
+    color: red;
+    font-weight: bold;
+}
+
+/* Pagination Controls */
+.pagination {
+    left: 200px;
+    position: absolute;
+    display: flex;
+    justify-content: center; /* Center the pagination controls */
+    margin: 20px auto; /* Center the margin horizontally */
+    width: 100%; /* Ensure the pagination takes up the full width of the container */
+}
+
+.pagination button {
+    background-color: orange;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Header Section for User Management */
+.user-management-header {
+    display: flex;
+    justify-content: flex-end;
+    margin: 20px 0;
+    padding: 0 20px;
+}
+
+/* Create User Button Styles */
+.create-user-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px; 
+}
+
+.create-user-btn:hover {
+    background-color: #218838;
+}
+
+.create-user-btn:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* General Button Styles */
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+/* Edit Button Styles */
+.edit-btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #45a049; /* Darker green */
+}
+
+/* Delete Button Styles */
+.delete-btn {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #d32f2f; /* Darker red */
+}
+
+/* Add some spacing between the buttons */
+.user-action-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .data-grid {
+        width: 87%; /* Set the width to 100% of the container on mobile */
+        margin: 0 auto; /* Center the table */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        margin-top: 500px;
+    }
+
+    .data-grid table {
+        min-width: 600px; /* Minimum width for the table to prevent it from squishing */
+    }
+
+    .data-grid th, 
+    .data-grid td {
+        padding: 10px; /* Reduce padding for smaller screens */
+    }
+
+    .user-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .pagination {
+        left: 0;
+        justify-content: center; /* Center pagination */
+    }
+
+    .pagination button {
+        padding: 8px 16px; /* Reduce padding for smaller screens */
+    }
+    
+    .user-management-header {
+        margin-right: 27px;
+    }
+}

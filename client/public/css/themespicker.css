@@ -1,0 +1,28 @@
+
+
+ input[type="color"] {
+    border: none;
+    height: 40px;
+    width: 40px;
+    border-radius: 4px; 
+    cursor: pointer; 
+}
+
+
+
+ #reset-theme-btn {
+    display: block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 1em;
+    background-color: var(--changeImg--background-color); /* Matches the button color with others */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+ #reset-theme-btn:hover {
+    background-color: var(--text-color); /* Darkens the button on hover */
+}

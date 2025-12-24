@@ -1,0 +1,58 @@
+<link rel="stylesheet" href="/css/popuplocation.css">
+<div class="popup-location" id="popup-location" style="display: none;" >
+    <div class="popup-location-inner">
+      <div class="popup-location-header">
+        <p class="popup-location-title">Các điểm đến ở Việt Nam</p>
+      </div>
+      <div class="popup-location-content" id="popup-location-content">
+        <% if (cities && cities.length > 0) { %>
+          <% cities.forEach((city, index) => { %>
+            <div class="popup-location-item">
+              <button
+                id="destination_<%= index %>"
+                class="popup-location-button"
+                onclick="handleLocationSelect('<%= city.name %>')"
+              >
+                <div class="popup-location-image">
+                  <img
+                    src="<%= city.img || 'default_image_url_here' %>"
+                    alt="<%= city.name %> image"
+                    class="popup-location-attractive-img"
+                  />
+                </div>
+                <div class="popup-location-details">
+                  <p class="popup-location-name"><%= city.name %></p>
+                  <p class="popup-location-count"><%= city.count %> hotels</p>
+                </div>
+              </button>
+            </div>
+          <% }) %>
+        <% } %>
+  
+        <% if (hotels && hotels.length > 0) { %>
+          <% hotels.forEach((hotel, index) => { %>
+            <div class="popup-location-item">
+              <button
+                id="destination_<%= index %>"
+                class="popup-location-button"
+                onclick="handleLocationSelect('<%= hotel.name %>')"
+              >
+                <div class="popup-location-image">
+                  <img
+                    src="<%= hotel.photos[0] || 'default_image_url_here' %>"
+                    alt="<%= hotel.name %> image"
+                    class="popup-location-attractive-img"
+                    style="width: 100%; height: 100%;"
+                  />
+                </div>
+                <div class="popup-location-details">
+                  <p class="popup-location-name"><%= hotel.name %></p>
+                  <p class="popup-location-count"><%= hotel.title %></p>
+                </div>
+              </button>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>

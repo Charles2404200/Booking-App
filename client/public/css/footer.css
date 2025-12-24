@@ -1,0 +1,40 @@
+/* Footer.css */
+
+.footer {
+    background-color: var(--nav-background-color);
+    padding: 40px 20px;
+    color: var(--nav-text-color);
+    font-size: 14px;
+    position: relative;
+    top: 100px;
+    bottom: 0;
+    z-index: -1;
+  }
+  
+  .fLists {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  
+  
+  .fList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    flex: 0 0 calc(20% - 20px); /* Adjust width of each list item */
+  }
+  
+  .fListItem {
+    margin-bottom: 8px;
+    color: var(--nav-text-color);
+  }
+  
+  .fText {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--nav-text-color);
+  }
+  

@@ -1,0 +1,124 @@
+<link rel="stylesheet" href="/css/hoteldashboard.css">
+
+<div class="hotel-dashboard">
+  <!-- Types Filter -->
+  <fieldset>
+    <legend>Types:</legend>
+    <% allTypes.forEach((type, index) => { %>
+      <label>
+        <input
+          type="checkbox"
+          class="dashboard-filter"
+          name="types"
+          value="<%= type %>"
+        />
+        <%= type %>
+      </label>
+    <% }) %>
+  </fieldset>
+
+  <!-- Facilities Filter -->
+  <fieldset>
+    <legend>Facilities:</legend>
+    <% allFacilities.forEach((facility, index) => { %>
+      <label>
+        <input
+          type="checkbox"
+          class="dashboard-filter"
+          name="facilities"
+          value="<%= facility %>"
+        />
+        <%= facility %>
+      </label>
+    <% }) %>
+  </fieldset>
+
+  <!-- Rating Filter (1 to 5 stars) -->
+  <fieldset>
+    <legend>Rating:</legend>
+    <% [5, 4, 3, 2, 1].forEach((star) => { %>
+      <label>
+        <input
+          type="checkbox"
+          class="dashboard-filter"
+          name="ratings"
+          value="<%= star %>"
+        />
+        <span class="hotel-rating" data-rating="<%= star %>"></span>
+      </label>
+    <% }) %>
+  </fieldset>
+
+  <!-- Price Range Filter -->
+  <fieldset>
+    <legend>Price Range (Cheapest Price):</legend>
+    <label for="minPrice">Min Price:</label>
+    <input
+      type="number"
+      id="minPrice"
+      class="dashboard-filter"
+      value='0'
+    />
+
+    <label for="maxPrice">Max Price:</label>
+    <input
+      type="number"
+      id="maxPrice"
+      class="dashboard-filter"
+      value='100000000'
+    />
+  </fieldset>
+</div>
+
+<script>
+  // Initialize filter object
+  let filter = {
+    types: [],
+    facilities: [],
+    ratings: [],
+    priceRange: {
+      min: 0,
+      max: Infinity
+    }
+  };
+
+
+
+   // Apply the filters and re-render the hotel list
+   function applyFilters() {
+        const selectedTypes = [...document.querySelectorAll('input[name="types"]:checked')].map(el => el.value);
+        const selectedFacilities = [...document.querySelectorAll('input[name="facilities"]:checked')].map(el => el.value);
+        const selectedRatings = [...document.querySelectorAll('input[name="ratings"]:checked')].map(el => parseInt(el.value));
+        const minPrice = document.getElementById('minPrice').value || 0;
+        const maxPrice = document.getElementById('maxPrice').value || Infinity;
+
+        // Update filter state
+        const filter = {
+            types: selectedTypes,
+            facilities: selectedFacilities,
+            ratings: selectedRatings,
+            priceRange: {
+                min: parseInt(minPrice),
+                max: parseInt(maxPrice)
+            }
+        };
+
+        // Re-render the hotel list with the updated filter
+        renderHotelList(filter);
+    }
+
+    // Add event listeners to dashboard filters
+    document.querySelectorAll('.dashboard-filter').forEach(element => {
+        element.addEventListener('change', applyFilters);
+    });
+  // Scroll functionality for the dashboard
+  window.addEventListener('scroll', () => {
+    const dashboard = document.querySelector('.hotel-dashboard');
+
+    if (window.scrollY > 260) {
+      document.body.classList.add('scrolled');
+    } else {
+      document.body.classList.remove('scrolled');
+    }
+  });
+</script>

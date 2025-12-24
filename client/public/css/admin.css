@@ -1,0 +1,13 @@
+.admin-app {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    flex: 1;
+  }
+  
+
+  .content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }

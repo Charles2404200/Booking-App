@@ -1,0 +1,138 @@
+.account-button {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--nav-background-color);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 280px; /* Adjust width as needed */
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: Arial, sans-serif; /* Use a standard font like Arial */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-options {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 5px;
+  width: 100%; /* Expand to full width */
+  display: flex;
+  flex-direction: column; 
+  flex: 1 1 1 1;/* Layout items vertically */
+}
+
+.menu-options li {
+  padding: 12px 0;
+  flex: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 0;
+}
+.menu-options li div{
+  text-decoration: none;
+  color: var(--nav-text-color);
+  font-weight: bold;
+  transition: color 0.3s ease;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.menu-options li a,
+.menu-options li button {
+  color: var(--nav-text-color);
+  text-decoration: none;
+  font-weight: bold; /* Bold font */
+  font-size: 16px; /* Larger font size */
+  text-align: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu-options li a:hover,
+.menu-options li button:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.menu-button {
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #4CAF50; /* Green background for buttons */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.menu-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.thumbnail-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.edit-icon {
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.edit-svg {
+  fill: #5f6368; /* Google's icon color */
+}
+
+.edit-svg:hover {
+  fill: #202124; /* Darker color on hover */
+}
+.login-button,
+.signup-button,
+.menu-options li a {
+  color: var(--nav-text-color);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.login-button:hover,
+.signup-button:hover,
+.menu-options li a:hover {
+  background-color: #f0f0f0; /* Similar to the background in the image */
+  color: #008080; /* Teal color for the text */
+}

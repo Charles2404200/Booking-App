@@ -1,0 +1,63 @@
+<link rel="stylesheet" href="/css/bookinglist.css">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<div class="bookings-list" id="bookings-list" style="display: none;">
+    <% if (bookings && bookings.length > 0) { %>
+      <% bookings.forEach((booking) => { %>
+        <div class="booking-card" id="booking-card-<%= booking._id %>">
+          <img src="<%= booking.hotel.photos[0] %>" alt="Hotel Image" class="hotel-img">
+          <div class="booking-details">
+            <h3>Hotel: <%= booking.hotel.name %></h3>
+            <p>Room: <%= booking.room.title %> (Room Number: <%= booking.roomNumber %>)</p>
+            <p>Check-in: <%= new Date(booking.checkInDate).toLocaleDateString() %></p>
+            <p>Check-out: <%= new Date(booking.checkOutDate).toLocaleDateString() %></p>
+            <p>Total Price: $<%= booking.totalPrice %></p>
+            <p>Guests: <%= booking.guests.adults %> Adults, <%= booking.guests.children %> Children</p>
+          </div>
+          <div class="delete-booking-btn">
+            <i style="font-size:24px" class="fa" onclick="confirmDelete('<%= booking._id %>')">&#xf014;</i>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p>No bookings found.</p>
+    <% } %>
+</div>
+
+
+
+<script>
+  // Handle delete with confirmation prompt
+  const confirmDelete = (bookingId) => {
+    if (confirm("Are you sure you want to delete this booking? This action cannot be undone.")) {
+      handleDelete(bookingId);
+    }
+  };
+
+  const handleDelete = async (bookingId) => {
+    try {
+      const response = await axios.delete(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/bookings/${bookingId}`, {
+        withCredentials: true,
+      });
+      console.log("Delete Successful", response);
+      
+      // Remove the booking card from the DOM
+      const bookingCard = document.getElementById(`booking-card-${bookingId}`);
+      const bookingCount = document.getElementById('bookingCount');
+      
+      if (bookingCard && bookingCount) {
+        bookingCard.remove();
+        bookingCount.innerText = parseInt(bookingCount.innerText) - 1;
+      }
+
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      if (error.response && error.response.status === 403) {
+    alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+    handleLogout(); 
+} else {
+      alert("Failed to delete the booking.");
+}
+    }
+};
+</script>

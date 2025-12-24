@@ -1,0 +1,217 @@
+/* Container for the entire post form, centering it with a semi-transparent background */
+.post-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6); /* Slightly darker background for more emphasis */
+    z-index: 100;
+    padding: 20px;
+}
+
+/* The post form itself with a white background, rounded corners, and shadow */
+.post-form {
+    background-color: var(--sidebar--background-color); /* Bright white background for a clean look */
+    border-radius: 15px; /* More pronounced rounding for a modern feel */
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+    font-family: Arial, sans-serif;
+    padding: 25px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* The close button in the top-right corner */
+.close-button {
+    position: absolute;
+    top: 10px; /* Distance from the top */
+    right: 10px; /* Distance from the right */
+    background: none;
+    border: none;
+    font-size: 1.8em; /* Slightly larger for easier access */
+    color: #606770;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    z-index: 101; /* Ensure it appears above other elements */
+}
+
+    
+
+.post-form-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: var(--sidebar--text-color); /* Darker color for better contrast */
+}
+
+/* Body of the post form */
+.post-form-body {
+    padding-top: 20px;
+}
+
+/* User information section, including avatar and username */
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+
+
+.user-name {
+    font-weight: bold;
+    font-size: 16px; /* Slightly larger for readability */
+    color: var(--sidebar--text-color);
+}
+
+/* Text area for writing the post */
+.post-textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    font-size: 16px;
+    margin-bottom: 20px;
+    background-color:var(--inputf--background-color);
+    padding: 12px;
+    border-radius: 10px; /* Slightly larger radius for smoother look */
+    box-sizing: border-box;
+    transition: background-color 0.3s ease; /* Smooth transition when focusing */
+    color: var( --sidebar--text-color);
+}
+
+.post-textarea:focus {
+    outline: none;
+    background-color: var( --sidebar--hover-color)
+}
+
+/* Section for additional options like image, video, etc. */
+.post-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.additional-options {
+    display: flex;
+}
+
+.option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px; /* Slightly larger for better touch target */
+    height: 45px;
+    background-color: var(--inputf--background-color);
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 10px; /* More spacing between options */
+    font-size: 20px; /* Slightly larger icon */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.option:hover {
+    background-color: #e9ecef;
+}
+
+/* URL input container with a close button */
+.url-input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-top: 10px; /* Space between the URL option and the input field */
+    padding: 5px;
+    background-color: #f0f2f5; /* Matching background color with other options */
+    border-radius: 10px;
+    margin-bottom: 10px;
+
+}
+
+.url-input-container input {
+    flex-grow: 1; /* Makes the input take up available space */
+    border: none;
+    padding: 10px;
+    border-radius: 10px; /* Rounded corners for consistency */
+    background-color: transparent; /* Background color matching container */
+    font-size: 14px;
+}
+
+.url-input-container input:focus {
+    outline: none;
+    background-color: #e9ecef; /* Slightly darker background on focus */
+}
+
+.url-close-button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    color: #606770;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+.url-close-button:hover {
+    color: #f02849; /* Red color on hover */
+}
+
+/* Footer section with the submit button */
+.post-form-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.post-submit-button {
+    background-color: #1877f2;
+    color: white;
+    padding: 12px 24px; /* Slightly more padding for a better button feel */
+    border: none;
+    border-radius: 25px; /* More rounded for a modern look */
+    cursor: not-allowed;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Smooth transition when enabled/disabled */
+}
+
+.post-submit-button:enabled {
+    background-color: #007bff;
+    cursor: pointer;
+}
+
+.post-submit-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    color: #666666;
+    border: 1px solid #999999;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .post-form {
+        width: 90%;
+    }
+
+    .post-textarea {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .post-submit-button {
+        font-size: 14px;
+        padding: 10px 18px;
+    }
+}

@@ -1,0 +1,357 @@
+#post-cards-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    padding: 0 10px;
+}
+
+.post-card {
+    position: relative;
+    border: 1px solid var(--sidebar--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: var(--sidebar--background-color);
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.post-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.post-title-container {
+    text-align: start;
+}
+
+.post-title {
+    font-size: 2em;
+    font-weight: bold;
+    color: var( --popup--text-color);
+}
+
+.user-details-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    margin-right: 430px;
+}
+
+
+.user-name {
+    font-weight: bold;
+    font-size: 1em;
+    color: #000;
+}
+
+.post-timestamp {
+    font-size: 0.9em;
+    color: #777;
+}
+
+.fa-ellipsis-h {
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s ease;
+}
+
+.fa-ellipsis-h:hover {
+    color: #555;
+}
+
+.post-content {
+    margin-top: 10px;
+    font-size: 1.1em;
+    color: #333;
+    text-align: left;
+}
+
+.post-image img {
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line--border-color);
+}
+
+.post-footer span {
+    display: inline-block;
+    background-color: transparent;
+    color: var( --like--text-color);
+    cursor: pointer;
+    font-size: 1em;
+    padding: 5px 15px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    text-align: center;
+}
+
+.post-footer span:hover {
+    color: #1877F2;
+    background-color: var( --sidebar--hover-color)
+}
+
+.post-footer span:active {
+    transform: scale(0.95);
+}
+
+.post-footer span i {
+    margin-right: 5px;
+    font-size: 1.2em;
+}
+
+.fix-pop {
+    position: absolute;
+    top: 15px;
+    right: 0;
+    background-color: var(--ipnut--background-color);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px var(--sidebar--border-color);
+    z-index: 100;
+    padding: 10px;
+    display: none;
+    min-width: 100px;
+}
+
+.fix-pop div {
+    padding: 8px 10px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.fix-pop div:hover {
+    background-color: #f0f0f0;
+    color: #007bff;
+}
+
+.fix-pop div.delete-post {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.fix-pop div.delete-post:hover {
+    background-color: var( --sidebar--hover-color);
+    color: #c9302c;
+}
+
+.fix-pop div.update-post {
+    color: #5bc0de;
+    font-weight: bold;
+}
+
+.fix-pop div.update-post:hover {
+    background-color: var( --sidebar--hover-color);
+    color: #31b0d5;
+}
+
+.comment-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.comment-text {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--line--border-color);
+    font-size: 14px;
+    outline: none;
+    margin-right: 10px;
+    overflow: auto;
+}
+
+.comment-input i {
+    font-size: 22px;
+    color: gray;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.reply-toggle {
+    cursor: pointer;
+    color: #007BFF;
+    font-size: 14px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.reply-toggle:hover {
+    text-decoration: underline;
+}
+
+.comment-replies {
+    margin-left: 40px;
+    padding-left: 15px;
+    border-left: 2px solid #ddd;
+    display: none;
+}
+
+.reply-form {
+    display: none;
+    margin-top: 10px;
+}
+
+
+@media (max-width: 768px) {
+    .post-card {
+        width: 90%;
+        max-width: none;
+    }
+
+    .post-title {
+        font-size: 1.5em;
+    }
+
+    .fa-ellipsis-h {
+        font-size: 1.2em;
+    }
+
+    
+
+    .post-footer span {
+        font-size: 0.9em;
+        padding: 4px 10px;
+    }
+
+    .user-details-container {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        margin-left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .user-name {
+        font-size: 1em;
+    }
+
+    .post-title {
+        font-size: 1.2em;
+        position: static;
+        transform: none;
+        text-align: center;
+    }
+
+    .post-timestamp {
+        font-size: 0.8em;
+    }
+
+    .post-footer span {
+        font-size: 0.9em;
+        padding: 4px 10px;
+    }
+
+    .post-footer span i {
+        font-size: 1em;
+    }
+
+    .user-details-container {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-right: 0;
+    }
+
+    .post-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .close-post-button i {
+        font-size: 1em;
+        right: 0;
+        top: 0;
+    }
+}
+
+.close-post-button i {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: var(--sidebar--text-color);
+    cursor: pointer;
+    outline: none;
+}
+
+.close-post-button i:hover {
+    color: red;
+}
+
+@media (max-width: 480px) {
+    .comment-input, .comment-text, .comment-replies, .reply-form {
+        max-width: 100%; /* Ensure the comment sections don't overflow */
+        width: 100%; /* Make it full width */
+    }
+
+    .comment-text {
+        padding: 8px 10px; /* Reduce padding for better mobile fit */
+        font-size: 0.9em; /* Adjust font size */
+    }
+
+    .reply-toggle {
+        font-size: 0.9em; /* Adjust reply toggle size */
+    }
+
+    .post-footer span {
+        font-size: 0.8em;
+        padding: 4px 10px;
+    }
+
+    .comment-replies {
+        margin-left: 20px; /* Reduce indentation on replies */
+    }
+
+    .post-card {
+        width: 90%;
+        max-width: 100%; /* Ensure post card doesn't overflow */
+    }
+}

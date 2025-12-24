@@ -1,0 +1,146 @@
+/* Hotel Dashboard Container */
+.hotel-dashboard {
+    position: fixed; /* Fixed position to stay on the left */
+    top: 280px; /* Adjust the top position based on your header height */
+    left: 20px; /* Adjust to ensure enough padding from the left edge */
+    width: 250px; /* Define a fixed width for the dashboard */
+    height: calc(100vh - 100px); /* Full height, leaving space for the top and bottom padding */
+    overflow-y: auto; /* Scrollable content if it overflows */
+    background-color:var(--nav-background-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    transition: top 0.3s ease; /* Smooth transition for top position change */
+    z-index: 1;
+}
+
+/* Adjust dashboard position when scrolled */
+.scrolled .hotel-dashboard {
+    top: 20px; /* Adjust position when page is scrolled */
+}
+
+/* Fieldset styling */
+.hotel-dashboard fieldset {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid var(--hoteldash--border-color);
+    border-radius: 5px;
+    background-color: var(--nav-background-color);
+}
+
+.hotel-dashboard legend {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(    --sidebar--text-color);
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+
+/* Label styling */
+.hotel-dashboard label {
+    display: block;
+    margin: 8px 0;
+    font-size: 14px;
+    color:  var(    ---text-color);
+    cursor: pointer;
+}
+
+.hotel-dashboard input[type="checkbox"],
+.hotel-dashboard input[type="radio"] {
+    margin-right: 10px;
+
+}
+
+/* Star Rating Display */
+.hotel-dashboard .star-rating {
+    display: inline-flex;
+    margin-left: 10px;
+}
+
+.filled-star {
+    color: #ffcc00;
+    font-size: 18px;
+}
+
+.empty-star {
+    color: #ddd;
+    font-size: 18px;
+}
+
+.half-star {
+    color: #ffcc00;
+    font-size: 18px;
+    position: relative;
+}
+
+.half-star:before {
+    content: '☆';
+    position: absolute;
+    color: #ddd;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+}
+
+/* Price Range Slider */
+.hotel-dashboard .price-range {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hotel-dashboard .price-range input[type="range"] {
+    width: 100%;
+    margin-right: 10px;
+}
+
+.hotel-dashboard .price-label {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Apply Button */
+.hotel-dashboard .apply-button {
+    display: inline-block;
+    background-color: #ff5a5f;
+    color: #fff;
+    padding: 8px 12px;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.hotel-dashboard .apply-button:hover {
+    background-color: #e54e53;
+}
+
+.hotel-dashboard .apply-button:focus {
+    outline: none;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .hotel-dashboard {
+        width: 85%; /* Full width on small screens */
+        position: relative; /* Change from fixed to relative for mobile */
+        margin: 20px; /* Separate from content on small screens */
+        top: 0;
+        left: 0;
+        height: 400px; /* Allow height to adjust based on content */
+        padding: 10px;
+    }
+
+    .hotel-dashboard fieldset {
+        margin-bottom: 15px;
+    }
+
+    .hotel-dashboard .apply-button {
+        width: 100%; /* Full width apply button on mobile */
+    }
+
+    .price-range input[type="range"] {
+        margin-right: 5px;
+    }
+}

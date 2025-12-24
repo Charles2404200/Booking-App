@@ -1,0 +1,248 @@
+/* General Styles */
+.user-profile {
+    padding: 20px;
+    max-width: 700px;
+    margin: 60px auto 0 auto;
+    font-family: Arial, sans-serif;
+    background-color: var( --sidebar--background-color); /* Light mode background */
+    box-shadow: 0 4px 8px var(--sidebar-shadow); /* Light mode shadow */
+    border-radius: 10px; /* Border radius */
+    margin-right: 100px;
+}
+
+.user-profile h2 {
+    text-align: center;
+    font-size: 24px;
+    color: var(--sidebar--text-color); /* Light mode text */
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.Update-Account {
+    font-size: 16px;
+    color: var(--sidebar--text-color); /* Light mode text */
+    font-weight: 600;
+    margin-top: 100px;
+}
+
+/* Navigation and Forms */
+.nav-choose {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.info-nav {
+    padding: 15px;
+    border: 2px solid var(--user-profile--border-color); /* Light mode border */
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: var( --sidebar--background-color); /* Light mode background */
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s, border-color 0.3s;
+    color: var(--sidebar--text-color);
+}
+
+.info-nav:hover {
+    background-color: var(--sidebar--hover-color); /* Hover background */
+    border-color: #333; /* Border color on hover */
+}
+
+.info-nav span {
+    font-size: 16px;
+    color: var(--sidebar--text-color); /* Light mode text */
+}
+
+.update-form {
+    padding: 15px;
+    border: 2px solid var(--user-profile--border-color); /* Light mode border */
+    border-radius: 10px;
+    background-color: var( --sidebar--background-color); /* Light mode background */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.update-nav h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--sidebar--text-color); /* Light mode text */
+
+}
+
+.update-nav input {
+    padding: 10px;
+    border: 2px solid var(--user-profile--border-color); /* Light mode border */
+    border-radius: 10px;
+    font-size: 16px;
+    color:var(--sidebar--text-color); /* Light mode text */
+    background-color: var( --sidebar--background-color); /* Light mode background */
+    transition: border-color 0.3s;
+}
+
+.update-nav input:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 0 5px rgba(66, 133, 244, 0.3);
+}
+
+.close-button {
+    padding: 10px 14px;
+    border: none;
+    background-color: #f44336;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.close-button:hover {
+    background-color: #e53935;
+}
+
+.submit-update-button {
+    padding: 12px 22px;
+    border: none;
+    background-color:var( --changeImg--background-color);
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.submit-update-button:hover {
+    background-color: #357ae8;
+    box-shadow: 0 4px 6px var(--sidebar-shadow);
+}
+
+/* Alert Styles */
+.alert.alert-danger {
+    background-color: #fce8e6;
+    border: 2px solid #f5c2c7; /* Light mode border */
+    color: #d93025;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.alert.alert-danger ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.alert.alert-danger i {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.error-update-message {
+    color: #f02849;
+    font-size: 14px;
+    margin-top: 10px;
+    align-self: flex-start;
+}
+
+/* Change Img Button Styling */
+.changeImg {
+    display: block;
+    background-color:var( --changeImg--background-color);
+    color: white;
+    padding: 12px 4px;
+    border: 1px #64B5F6;
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px var(--sidebar-shadow); /* Light mode shadow */
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.changeImg:hover {
+    background-color: #2a85cf;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile View Adjustments */
+@media screen and (max-width: 768px) {
+    .user-profile {
+        padding: 15px;
+        margin: 40px 15px 0 30px;
+        max-width: 80%;
+        box-shadow: 0 4px 8px var(--sidebar-shadow); /* Light mode shadow */
+        border-radius: 20px;
+        margin-top: 500px;
+        border: 2px solid var(--user-profile--border-color); /* Light mode border */
+    }
+
+    .user-profile h2 {
+        text-align: center;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .nav-choose {
+        gap: 10px;
+    }
+
+    .info-nav {
+        color: var(--sidebar--text-color);
+        padding: 10px;
+        font-size: 14px;
+        border: 2px solid var(--user-profile--border-color); /* Light mode border */
+    }
+
+    .update-form {
+        padding: 10px;
+        gap: 10px;
+        border: 2px solid var(--user-profile--border-color); /* Light mode border */
+    }
+
+    .update-nav h3 {
+        font-size: 16px;
+    }
+
+    .update-nav input {
+        padding: 8px;
+        font-size: 14px;
+        border: 2px solid var(--user-profile--border-color); /* Light mode border */
+    }
+
+    .submit-update-button,
+    .changeImg {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .close-button {
+        padding: 10px 12px;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .alert.alert-danger {
+        padding: 8px;
+        font-size: 14px;
+        border: 2px solid #f5c2c7; /* Light mode border */
+    }
+
+    .error-update-message {
+        font-size: 12px;
+    }
+}
+
+.changeImg i {
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: middle;
+}

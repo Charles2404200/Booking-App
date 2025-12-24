@@ -1,0 +1,13 @@
+<div>
+    <%- include('../partials/components/carousell') %>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const error = '<%= error && error %>'; // Embed the error query parameter in the script
+
+        if ( error === 'account_locked') {
+            alert('Your account is locked. Please contact support.');
+        }
+    });
+</script>

@@ -1,0 +1,42 @@
+.cart {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.cart i {
+    font-size: 22px;
+    transition: color 0.3s ease;
+}
+
+.cart:hover i {
+    color: #ff6347; /* Change color on hover */
+}
+
+.cart-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    border-radius: 50%;
+    padding: 2px 6px;
+    transition: background-color 0.3s ease;
+}
+
+.cart:hover .cart-count {
+    background-color: #ff6347; /* Change count color on hover */
+}
+
+@media (max-width: 768px) {
+    .cart i {
+        font-size: 18px;
+    }
+
+    .cart-count {
+        font-size: 10px;
+        top: -8px;
+        right: -8px;
+    }
+}

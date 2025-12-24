@@ -1,0 +1,83 @@
+<link rel="stylesheet" href="/css/postdashboard.css">
+
+
+<div class="post-dashboard">
+    <a class="user-profile" href="/profile">
+        <img src="<%= user&& user.img ? user.img : '/images/clone.png' %>" alt="User Avatar" class="user-avatar">
+        <span class="user-name"><%= user ? user.username : 'User Name' %></span>
+    </a>
+    <div class="search-container">
+        <input type="text" placeholder="Search posts..." class="search-input" onkeypress="handleSearch(event)">
+    </div>
+    <div class="sort-options">
+        <div class="category-sort">
+            <label>
+                <input type="radio" name="postCategory" value="allPosts" onchange="updateSort()"> All Posts
+            </label>
+            <label>
+                <input type="radio" name="postCategory" value="userPosts" onchange="updateSort()"> Your Posts
+            </label>
+        </div>
+        <div class="order-sort">
+            <label for="orderSelect">Sort by:</label>
+            <select id="orderSelect" onchange="updateSort()">
+                <option value="latest">Latest</option>
+                <option value="oldest">Oldest</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateSort() {
+        const category = document.querySelector('input[name="postCategory"]:checked').value;
+        const order = document.getElementById('orderSelect').value;
+        const searchQuery = document.querySelector('.search-input').value.trim();
+
+        // Check if the user is logged in before proceeding with userPosts sort
+        if (category === 'userPosts' && '<%= user ? "true" : "" %>' === '') {
+            openLogin();
+            return;
+        }
+
+        // Construct the query string based on the selected options
+        let query = `?sort=${order}`;
+        if (category === 'userPosts') {
+            const userId = '<%= user && user._id %>'; // Ensure userId is properly set
+            query += `&userId=${userId}`;
+        }
+        if (searchQuery) {
+            query += `&search=${encodeURIComponent(searchQuery)}`;
+        }
+
+        // Redirect to the sorted and/or searched page with the constructed query
+        window.location.href = `/forum${query}`;
+    }
+
+    function handleSearch(event) {
+        if (event.key === 'Enter') { // Detect "Enter" key press
+            updateSort(); // Call the sorting function which will handle the search as well
+        }
+    }
+
+    // Set the default selected values on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const sortType = params.get('sort') || 'latest';
+        const userId = params.get('userId');
+        const searchQuery = params.get('search') || '';
+
+        // Set the sorting order dropdown
+        document.getElementById('orderSelect').value = sortType;
+
+        // Set the category radio button
+        if (userId) {
+            document.querySelector('input[value="userPosts"]').checked = true;
+        } else {
+            document.querySelector('input[value="allPosts"]').checked = true;
+        }
+
+        // Set the search input value if available
+        document.querySelector('.search-input').value = decodeURIComponent(searchQuery);
+    });
+</script>

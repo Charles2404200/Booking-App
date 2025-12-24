@@ -1,0 +1,49 @@
+<link rel="stylesheet" href="/css/userdashboard.css">
+
+<div class="sidebar">
+    <h3>User Dashboard</h3>
+    <a class="userdashboard-profile" href="/profile">
+        <img src="<%= user.img ? user.img : '/images/clone.png' %>" alt="User Avatar" class="user-avatar">
+        <span class="user-name"><%= user ? user.username : 'User Name' %></span>
+    </a>
+    <ul class="user-menu">
+        
+        <li >
+            <i class="fas fa-book"></i>My Booking
+        </li>
+       
+        <li>
+            <i class="fas fa-cog"></i>My Account
+        </li>
+        <li>
+            <i class="fas fa-power-off"></i>
+            <a href="/" onclick="handleLogout()" class="logout-link">Logging Out</a>
+        </li>
+    </ul>
+</div>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const bookingLink = document.querySelector('li i.fa-book');
+      const accountLink = document.querySelector('li i.fa-cog');
+  
+      bookingLink.parentElement.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent page reload
+        const userStatus='<%= user ? user.status : null %>'
+    if(userStatus === "lock"){
+        alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+        handleLogout(); 
+    } else if(userStatus ==="disabled") {
+        window.location.href= '/profile?type=account';
+    } else{
+        window.location.href= '/profile?type=booking';
+
+    }
+      });
+  
+      accountLink.parentElement.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent page reload
+        window.location.href = '/profile?type=account'; // Navigate with query
+      });
+    });
+  </script>

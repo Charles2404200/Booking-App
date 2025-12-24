@@ -1,0 +1,82 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<link rel="stylesheet" href="/css/verifyswitch.css">
+<span class="active-Account">Active Account</span>
+<div id="status-container">
+  <!-- This container will hold either the switch or the blocked icon -->
+  <label class="switch" id="switch-container">
+    <input type="checkbox" id="verify-checkbox" />
+    <span class="slider round"></span>
+  </label>
+  <i class="fas fa-ban" id="blocked-icon">You are locked.</i>
+</div>
+<p id="message"></p>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const userStatus = "<%= user.status %>"; 
+    const userEmail = "<%= user.email %>"; 
+    const userId = "<%= user._id %>"; 
+
+    const verifyCheckbox = document.getElementById('verify-checkbox');
+    const messageElement = document.getElementById('message');
+    const switchContainer = document.getElementById('switch-container');
+    const blockedIcon = document.getElementById('blocked-icon');
+
+    // Initially hide both the switch and the blocked icon
+    switchContainer.style.display = 'none';
+    blockedIcon.style.display = 'none';
+
+    if (userStatus === 'lock') {
+      // Show the blocked icon if the status is 'blocked'
+      blockedIcon.style.display = 'inline-block';
+    } else {
+      // Handle the switch if the user is not blocked
+      switchContainer.style.display = 'inline-block';
+
+      if (userStatus === 'active') {
+        verifyCheckbox.checked = true;
+      }
+
+      verifyCheckbox.addEventListener('change', async function() {
+        if (verifyCheckbox.checked) {
+          // Activation case
+          try {
+            const res = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/auth/send-activation-email', { email: userEmail });
+            messageElement.textContent = res.data.message;
+          } catch (error) {
+            messageElement.textContent = 'Error sending activation email';
+            verifyCheckbox.checked = false;  // Revert the checkbox state if there's an error
+            console.error('Error sending activation email', error);
+          }
+        } else {
+          // Deactivation case with confirmation
+          const confirmDeactivation = confirm('Are you sure you want to deactivate your account?');
+          if (confirmDeactivation) {
+            try {
+              await handleStatusChange(userId, 'disabled');
+              messageElement.textContent = 'Your account has been deactivated.';
+            } catch (error) {
+              messageElement.textContent = 'Error deactivating account';
+              verifyCheckbox.checked = true;  // Revert the checkbox state if there's an error
+              console.error('Error deactivating account', error);
+            }
+          } else {
+            // If the user cancels deactivation, revert the checkbox state
+            verifyCheckbox.checked = true;
+          }
+        }
+      });
+    }
+  });
+
+  // Deactivate account function using handleStatusChange
+  async function handleStatusChange(id, newStatus) {
+    try {
+      await axios.put(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/users/${id}`, { status: newStatus }, { withCredentials: true });
+    } catch (err) {
+      console.error('Error updating user status:', err);
+      throw err;  // Rethrow the error so it can be caught in the main flow
+    }
+  }
+</script>

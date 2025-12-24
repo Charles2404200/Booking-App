@@ -1,0 +1,85 @@
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+
+  font-family: 'Roboto', sans-serif;
+
+  margin: 0;
+  padding: 0;
+
+}
+
+a {
+  color: var(--text-color);
+}
+
+input::placeholder {
+  color: var(--text-color);
+}
+
+input[type=text] {
+  color: var(--text-color);
+
+}
+
+/*Logo */
+
+.logo {
+  width: 50px;
+  /* Adjust width as needed */
+  height: 50px;
+  /* Adjust height as needed */
+}
+
+.logo img {
+  width: 100%;
+  /* Make sure the image fills its container */
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
+
+
+
+
+
+/*Thumbnail*/
+
+.thumbnail-container {
+  width: 40px;
+  /* Adjust size as needed */
+  height: 40px;
+  /* Adjust size as needed */
+  overflow: hidden;
+  border-radius: 50%;
+  flex-shrink: 0;
+  /* Prevent image from shrinking */
+  position: relative;
+  border: 2px solid #ffffff;
+  /* White border */
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+  /* Light shadow */
+}
+
+.thumbnail-container img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  /* Smooth hover effect */
+}
+
+.thumbnail-container:hover {
+  border-color: #dadce0;
+  /* Light gray border on hover */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  /* Slightly stronger shadow on hover */
+}
+
+.thumbnail-container:hover img {
+  transform: scale(1.1);
+  /* Scale up slightly on hover */
+}

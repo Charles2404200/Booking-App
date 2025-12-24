@@ -1,0 +1,100 @@
+
+.data-grid {
+    width: 75%; /* Set the width to 70% of its container */
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-left: auto; /* Push the table to the right */
+    margin-right: 10px; /* Add a margin to move the table slightly inward from the right */
+    background-color: #ffffff; /* White background for the entire table */
+    border-radius: 10px; /* Rounded corners for the table */
+    overflow-x: scroll; /* Add horizontal scrolling if needed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin-top: 20px; /* Add space above the table */
+}
+
+.data-grid table {
+    width: 100%; /* Make sure the table fills the container */
+    border-collapse: collapse; /* Ensure no space between table borders */
+}
+
+.data-grid th, .data-grid td {
+    padding: 25px; /* Increase padding for a larger, more spaced-out table */
+    text-align: left;
+    border-bottom: 1px solid #dddddd; /* Light gray line between rows */
+}
+
+.data-grid th {
+    background-color: #ff9946; /* Orange background for the header */
+    font-weight: bold;
+    color: #ffffff; /* White text for the header */
+    text-align: left;
+    border-bottom: 2px solid #ff9946; /* Stronger line under the header */
+    padding-bottom: 20px; /* Add space between the header and the first row */
+}
+
+.data-grid tr {
+    background-color: #ffffff; /* White background for rows */
+    border-bottom: 1px solid #dddddd; /* Light gray line separating each account */
+}
+
+.data-grid tr:nth-child(even) {
+    background-color: #f9f9f9; /* Slightly off-white background for even rows */
+}
+
+.data-grid tr:hover {
+    background-color: #f1f1f1; /* Light gray on hover */
+}
+
+.data-grid tr:last-child td {
+    border-bottom: none; /* Remove the bottom border from the last row */
+}
+
+/* Image Styling within Table */
+.post-img {
+    width: 200px; /* Adjust width for post images */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 5px; /* Optional: Slightly round the corners */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+    margin-top: 10px; /* Add space between the image and the text above */
+}
+.post-action-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+@media screen and (max-width: 768px) {
+    .data-grid{
+        width: 87%; /* Set the width to 100% of the container on mobile */
+        margin: 0 auto; /* Center the table */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
+        margin-top: 500px;
+    }
+
+    .data-grid table {
+        min-width: 600px; /* Minimum width for the table to prevent it from squishing */
+    }
+
+    .data-grid th, 
+    .data-grid td {
+        padding: 10px; /* Reduce padding for smaller screens */
+    }
+
+    .user-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .pagination {
+        left: 0;
+        justify-content: center; /* Center pagination */
+    }
+
+    .pagination button {
+        padding: 8px 16px; /* Reduce padding for smaller screens */
+    }
+    
+    .user-management-header {
+        margin-right: 27px;
+    }
+}

@@ -1,0 +1,90 @@
+
+<link rel="stylesheet" href="/css/posttable.css">
+<div class="Post-Table" style="display: none;">
+    <div class="data-grid">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>User</th>
+                    <th>Text</th>
+                    <th>Image</th>
+                    <th>Likes</th>
+                    <th>Comments</th>
+                    <th>Timestamp</th>
+                    <th>Editing Post</th>
+                </tr>
+            </thead>
+            <tbody id="post-table-body">
+                <% rowspost.forEach((row, index) => { %>
+                    <tr id="post-row-<%= row.id %>">
+                        <td><%= row.title %></td>
+                        <td><%= row.user ?  row.user.username : 'clone' %></td> <!-- Using the populated user object to display the username -->
+                        <td><%= row.text %></td>
+                        <td>
+                            <% if (row.img) { %>
+                                <img src="<%= row.img %>" alt="Post Image" class="post-img">
+                            <% } else { %>
+                                <span>No Image</span>
+                            <% } %>
+                        </td>
+                        <td><%= row.likes %></td>
+                        <td><%= row.comments %></td>
+                        <td><%= new Date(row.timestamp).toLocaleString() %></td>
+                        <td>
+                            <div class="post-action-buttons">
+                                <button class="delete-btn" onclick="handleDeletePost('<%= row.id %>', '<%= row.img %>')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination" id="post-pagination">
+        <button id="prevPostPage" disabled onclick="changePostPage(-1)">Previous</button>
+        <button id="nextPostPage" onclick="changePostPage(1)">Next</button>
+    </div>
+</div>
+
+
+<script>
+    
+async function handleDeletePost(postId, postImg) {
+    if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+        try {
+            // Delete the post from the database
+            const response = await axios.delete(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/posts/${postId}`, {
+                withCredentials: true
+            });
+
+            if (response.status === 200) {
+                alert('Post deleted successfully!');
+
+                // If postImg exists and is not empty, proceed to delete the image
+                if (postImg && postImg.includes('https://pub-93b162f2c2324969b45e28374787425b.r2.dev/')) {
+                    const res = await axios.post(`/post-img?postImg=${postImg}`, { imageFile: null }, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                        withCredentials: true,
+                    });
+
+                    if (res.status !== 200) {
+                        alert('Failed to delete the image. Please try again.');
+                    }
+                }
+
+                // Reload the page after deletion
+                window.location.reload();
+            } else {
+                alert('Failed to delete post. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            alert('Failed to delete post. Please try again.');
+        }
+    }
+}
+
+</script>

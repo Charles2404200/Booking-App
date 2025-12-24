@@ -1,0 +1,159 @@
+:root {
+    --background-color: #f2f2f2;
+    /* Default values */
+    --text-color: #333;
+    /* Default values */
+    --nav-background-color: #f2f2f2;
+    --nav-background-border-color:#ddd;
+    --carousell-color:#666565;
+    --nav-background-text:black;
+    --sidebar--background-color: #ffffff;
+    --sidebar--text-color: #333;
+    --sidebar--border-color: #ccc;
+    --sidebar--hover-color: rgba(0, 0, 0, 0.05); /* Light mode hover background */
+    --sidebar-shadow: rgba(0, 0, 0, 0.1); /* Sidebar shadow for light mode */
+    --user-profile--border-color:#ccc;
+    --changeImg--background-color: #29B6F6;
+    --attractive-img--background-color: :#2196F3;
+    --attractive-item--background-color: #ffffff;
+    --attractive-titles--text-color: #2196F3;
+    --attractive-h2--text-color:#333;
+    --textipnut--background-color: white;
+    --popup--text-color:#666;
+    --hoteldash--border-color:#ddd;
+    --coal--text-color:#777;
+    --ipnut--background-color:white;
+    --inputf--background-color:#f0f2f5;
+    --like--text-color:#606770;
+    --line--border-color:#eee;
+    --line--background-color: #ccc;
+    --list--background-color :#f0f0f0;
+    --gg--background-color: #fff;
+  }
+  [data-theme="dark"] {
+    --background-color: 	#414141;
+    --text-color: #dbdbdb;
+    --button-bg-color: white;
+    --button-text-color: black;
+    --nav-background-color: 	#363636;
+    --nav-background-border-color:#151716;
+    --carousell-color:white;
+    --nav-background-text:white;
+    --sidebar--background-color: #363636; /* Dark mode background */
+    --sidebar--text-color: #e0e0e0; /* Dark mode text */
+    --sidebar--border-color: #555; /* Dark mode border */
+    --sidebar--hover-color: rgba(105, 105, 105, 0.1); /* Dark mode hover background */
+    --sidebar-shadow: rgba(0, 0, 0, 0.5); /* Darker shadow for dark mode */
+    --user-profile--border-color:#555;
+    --changeImg--background-color:#2196F3 ;
+    --attractive-img--background-color:#29B6F6;
+    --attractive-item--background-color: #2E2E2E;
+    --attractive-titles--text-color: #29B6F6;
+    --attractive-h2--text-color::#dbdbdb;
+    --textipnut--background-color: #666565;
+    --popup--text-color:#dbdbdb;
+    --hoteldash--border-color:#494949;
+    --coal--text-color:#d1d1d1;
+    --ipnut--background-color:#494949;
+    --inputf--background-color:#494949;
+    --like--text-color:#d1d1d1;
+    --line--border-color:#555;
+    --line--background-color: #555;
+    --list--background-color :#363636;
+    --gg--background-color: #555;
+  }
+  [data-theme="custom"] {
+    --background-color: #f2f2f2; /* You can set custom values here */
+    --text-color: #333;
+    --nav-background-color: #f2f2f2;
+    --nav-background-border-color: #ddd;
+    --carousell-color: #666565;
+    --nav-background-text: black;
+    --sidebar--background-color: #ffffff;
+    --sidebar--text-color: #333;
+    --sidebar--border-color: #ccc;
+    --sidebar--hover-color: rgba(0, 0, 0, 0.05);
+    --sidebar-shadow: rgba(0, 0, 0, 0.1);
+    --user-profile--border-color: #ccc;
+    --changeImg--background-color: #29B6F6;
+    --attractive-img--background-color: #2196F3;
+    --attractive-item--background-color: #ffffff;
+    --attractive-titles--text-color: #2196F3;
+    --attractive-h2--text-color: #333;
+    --textipnut--background-color: white;
+    --popup--text-color: #666;
+    --hoteldash--border-color: #ddd;
+    --coal--text-color: #777;
+    --ipnut--background-color: white;
+    --inputf--background-color: #f0f2f5;
+    --like--text-color: #606770;
+    --line--border-color: #eee;
+    --line--background-color: #ccc;
+    --list--background-color: #f0f0f0;
+}
+  
+.theme-switcher {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.toggle-slot {
+    position: relative;
+    width: 80px;
+    height: 40px;
+    background: #ebebeb;
+    border-radius: 200px;
+    box-shadow: inset 0px 5px 15px rgba(0, 0, 0, 0.4), inset 0px -5px 15px rgba(255, 255, 255, 0.4);
+}
+
+.toggle-button {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffcc00, #ffaa00); /* Sun-like color when unchecked */
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s ease; /* Transition for smooth movement */
+}
+
+.theme-toggle:checked + .toggle-slot .toggle-button {
+    left: 46px;
+    background: linear-gradient(180deg, #777, #3a3a3a); /* Darker color when checked */
+}
+
+.sun-icon-wrapper,
+.moon-icon-wrapper {
+    position: absolute;
+    top: 8px;
+    z-index: 100;
+    width: 24px;
+}
+
+.sun-icon-wrapper {
+    left: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5px;}
+
+.moon-icon-wrapper {
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5px;
+
+}
+
+.theme-toggle:checked + .toggle-slot .sun-icon-wrapper {
+    fill: #7e7e7e;
+    color: #ff8c00;
+}
+
+.theme-toggle:checked + .toggle-slot .moon-icon-wrapper {
+    fill: #fff;
+}

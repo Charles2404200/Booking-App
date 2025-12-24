@@ -1,0 +1,17 @@
+<link  href="/css/thumnail.css">
+
+<div class="thumbnail-container">
+    <img id="userThumbnail" src="<%= user ? (user.img ? user.img : '/images/clone.png') : '/images/clone.png' %>" alt="User Thumbnail" />
+  </div>
+  <script>
+window.onload = function() {
+    const imgElement = document.getElementById('userThumbnail');
+    
+
+    // Handle image load error
+    imgElement.onerror = function() {
+        imgElement.src = '/images/clone.png';
+        console.log('Image failed to load, setting source to /images/clone.png');
+    };
+};
+  </script>

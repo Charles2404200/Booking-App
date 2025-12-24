@@ -1,0 +1,301 @@
+<link rel="stylesheet" href="/css/navbar.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome link -->
+<main class="main-content">
+    <div class="container">
+        <div class="search-box">
+            <div class="input-group" >
+                <span class="icon location-icon"></span>
+                <input type="text" id="location" placeholder="City, hotel, place to go" class="form-control location" onclick="openPopupLocation()"  oninput="handleInputChange(this)" >
+            </div>
+            <div class="input-group">
+                <span class="icon calendar-icon"></span>
+                <input type="text" id="checkIn" onfocus="this.type='date';" onblur="if(!this.value) this.type='text';" placeholder="Check-in" class="form-control">
+                <input type="text" id="checkOut" onfocus="this.type='date';" onblur="if(!this.value) this.type='text';" placeholder="Check-out" class="form-control">
+            </div>
+            <div class="input-group">
+                <span class="icon guest-icon"></span>
+                <input type="text" id="guests" placeholder="1 Adult(s), 0 Child, 1 Room" class="form-control" readonly onClick="toggleGuestPopup()">
+            </div>
+            <button type="submit" class="btn search-button" onclick="handleSearch()">
+                <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+            </button>
+        </div>
+        <div id="guestPopup" class="guest-popup">
+            <div class="guest-inputs">
+                <div class="input-group">
+                    <span role="img" aria-label="adult">Adult 👤</span>
+                    <button class="btn btn-secondary" onclick="changeNumber('adults', -1)">-</button>
+                    <input type="text" id="adults" value="1" readonly class="form-control">
+                    <button class="btn btn-secondary" onclick="changeNumber('adults', 1)">+</button>
+                </div>
+                <div class="input-group">
+                    <span role="img" aria-label="children">Children 👶</span>
+                    <button class="btn btn-secondary" onclick="changeNumber('children', -1)">-</button>
+                    <input type="text" id="children" value="0" readonly class="form-control">
+                    <button class="btn btn-secondary" onclick="changeNumber('children', 1)">+</button>
+                </div>
+                <div class="input-group">
+                    <span role="img" aria-label="room">Room 🚪</span>
+                    <button class="btn btn-secondary" onclick="changeNumber('rooms', -1)">-</button>
+                    <input type="text" id="rooms" value="1" readonly class="form-control">
+                    <button class="btn btn-secondary" onclick="changeNumber('rooms', 1)">+</button>
+                </div>
+                <button class="btn btn-primary" onClick="toggleGuestPopup()">Done</button>
+            </div>
+        </div>
+    </div>
+</main>
+<%- include('./popuplocation') %>
+<script>
+function toggleGuestPopup() {
+    var popup = document.getElementById("guestPopup");
+    var guestsInput = document.getElementById("guests");
+
+    if (popup.style.display === "block") {
+        popup.style.display = "none";
+    } else {
+        var rect = guestsInput.getBoundingClientRect();
+        popup.style.top = (rect.bottom + window.scrollY) + 'px';
+        popup.style.left = rect.left + window.scrollX + 'px';
+        popup.style.width = rect.width + 'px';
+        popup.style.display = "block";
+    }
+}
+
+function changeNumber(field, change) {
+    var element = document.getElementById(field);
+    var currentValue = parseInt(element.value, 10);
+    currentValue += change;
+
+    if (field === 'adults' || field === 'rooms') {
+        currentValue = Math.max(currentValue, 1);
+    } else if (field === 'children') {
+        currentValue = Math.max(currentValue, 0);
+    }
+
+    element.value = currentValue;
+    updateGuestSummary();
+}
+
+function updateGuestSummary() {
+    var adults = document.getElementById('adults').value;
+    var children = document.getElementById('children').value;
+    var rooms = document.getElementById('rooms').value;
+
+    var summary = rooms + ' room' + (rooms > 1 ? 's' : '') + ', ' + adults + ' adult' + (adults > 1 ? 's' : '');
+    if (children > 0) {
+        summary += ', ' + children + ' child' + (children > 1 ? 'ren' : '');
+    } else {
+        summary += ', 0 children';
+    }
+
+    document.getElementById('guests').value = summary;
+}
+const handleSearch = () => {
+    const location = document.getElementById('location').value;
+    let checkIn = document.getElementById('checkIn').value;
+    let checkOut = document.getElementById('checkOut').value;
+    const options = {
+        adults: document.getElementById('adults').value,
+        children: document.getElementById('children').value,
+        rooms: document.getElementById('rooms').value,
+    };
+    const user = '<%= user ? user : null %>'
+    if (user === ''){
+        openLogin();
+        return;
+    }
+    // If check-in is empty, set it to today's date
+    if (!checkIn) {
+        const today = new Date().toISOString().split('T')[0];
+        checkIn = today;
+        document.getElementById('checkIn').value = today;
+    }
+
+    // If check-out is empty, set it to tomorrow's date
+    if (!checkOut) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const nextDay = tomorrow.toISOString().split('T')[0];
+        checkOut = nextDay;
+        document.getElementById('checkOut').value = nextDay;
+    }
+
+    let query = '/hotel';
+
+    // Add location to query if it's not empty
+    if (location) {
+        query += `?location=${location}`;
+    }
+
+    // Add check-in date to query
+    query += (query.includes('?') ? '&' : '?') + `startDate=${checkIn}`;
+
+    // Add check-out date to query
+    query += (query.includes('?') ? '&' : '?') + `endDate=${checkOut}`;
+
+    // Add other options (adults, children, rooms)
+    Object.keys(options).forEach(option => {
+        if (options[option] && options[option] > 0) {
+            query += (query.includes('?') ? '&' : '?') + `${option}=${options[option]}`;
+        }
+    });
+
+    // Redirect to the constructed query
+    window.location.href = query;
+};
+
+function openPopupLocation() {
+    const popup = document.getElementById('popup-location');
+    
+    if (popup.style.display === "none" || popup.style.display === "") {
+        // Show the popup if it's hidden
+        popup.style.display = 'block';
+    } else {
+        // Hide the popup if it's visible
+        popup.style.display = 'none';
+    }
+}
+function closePopupLocation() {
+    document.getElementById('popup-location').style.display = 'none';
+    renderCitiesAndHotels(originalCities, originalHotels);  // Restore full list on close
+}
+
+const handleLocationSelect=(locationSelected)=>{
+    const location = document.getElementById('location');
+    location.value = locationSelected ? locationSelected : '';
+    openPopupLocation();
+}
+
+
+let originalCities = JSON.parse('<%- JSON.stringify(cities) %>');
+let originalHotels = JSON.parse('<%- JSON.stringify(hotels) %>');
+
+function handleInputChange(input) {
+    const query = input.value.toLowerCase();
+    const popupContent = document.getElementById('popup-location-content');
+    popupContent.innerHTML = ''; // Clear existing content
+
+    if (query.length > 0) {
+        const filteredCities = originalCities.filter(city => city.name.toLowerCase().includes(query));
+        const filteredHotels = originalHotels.filter(hotel => hotel.name.toLowerCase().includes(query));
+
+        renderCitiesAndHotels(filteredCities, filteredHotels);
+        document.getElementById("popup-location").style.display = "block";
+
+    } else {
+        closePopupLocation();  // Close if query is empty
+        renderCitiesAndHotels(originalCities, originalHotels); // Restore full list
+    }
+}
+
+function renderCitiesAndHotels(cities, hotels) {
+    const popupContent = document.getElementById('popup-location-content');
+    popupContent.innerHTML = ''; // Clear existing content
+
+    // Render cities
+    cities.forEach((city, index) => {
+        const cityItem = `
+        <div class="popup-location-item">
+            <button id="destination_${index}" class="popup-location-button" onclick="handleLocationSelect('${city.name}')">
+                <div class="popup-location-image">
+                    <img src="${city.img || 'default_image_url_here'}" alt="${city.name} image" class="popup-location-attractive-img" />
+                </div>
+                <div class="popup-location-details">
+                    <p class="popup-location-name">${city.name}</p>
+                    <p class="popup-location-count">${city.count} hotels</p>
+                </div>
+            </button>
+        </div>`;
+        popupContent.innerHTML += cityItem;
+    });
+
+    // Render hotels
+    hotels.forEach((hotel, index) => {
+        const hotelItem = `
+        <div class="popup-location-item">
+            <button id="destination_${index}" class="popup-location-button" onclick="handleLocationSelect('${hotel.name}')">
+                <div class="popup-location-image">
+                    <img src="${hotel.photos[0] || 'default_image_url_here'}" alt="${hotel.name} image" class="popup-location-attractive-img" style="width: 100%; height: 100%;" />
+                </div>
+                <div class="popup-location-details">
+                    <p class="popup-location-name">${hotel.name}</p>
+                    <p class="popup-location-count">${hotel.title}</p>
+                </div>
+            </button>
+        </div>`;
+        popupContent.innerHTML += hotelItem;
+    });
+}
+// Helper function to get query parameters
+function getQueryParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = {};
+    urlParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    return params;
+  }
+
+  // Function to pre-fill the search form with query values
+  function prefillSearchForm() {
+    const params = getQueryParams();
+    
+    if (params.location) {
+      document.getElementById('location').value = params.location;
+    }
+    
+    if (params.startDate) {
+      document.getElementById('checkIn').value = params.startDate;
+    }
+    
+    if (params.endDate) {
+      document.getElementById('checkOut').value = params.endDate;
+    }
+
+    if (params.adults) {
+      document.getElementById('adults').value = params.adults;
+      updateGuestSummary(); // Update guest summary based on adults and children values
+    }
+
+    if (params.children) {
+      document.getElementById('children').value = params.children;
+      updateGuestSummary();
+    }
+
+    if (params.rooms) {
+      document.getElementById('rooms').value = params.rooms;
+      updateGuestSummary();
+    }
+  }
+
+  // Call the function to prefill the form when the page loads
+  window.onload = function() {
+    prefillSearchForm();
+  };
+  document.getElementById('checkIn').addEventListener('change', function() {
+    const checkInDate = new Date(this.value);
+    const checkOutInput = document.getElementById('checkOut');
+    const checkOutDate = new Date(checkOutInput.value);
+
+    // If the check-out date is before or equal to the check-in date, update it
+    if (checkOutDate <= checkInDate) {
+      checkOutInput.value = new Date(checkInDate.getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0]; // Set check-out to the next day
+    }
+
+    // Set minimum check-out date to one day after check-in
+    checkOutInput.min = new Date(checkInDate.getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0];
+  });
+
+  document.getElementById('checkOut').addEventListener('change', function() {
+    const checkInDate = new Date(document.getElementById('checkIn').value);
+    const checkOutDate = new Date(this.value);
+
+    // If the check-out date is before the check-in date, reset it
+    if (checkOutDate <= checkInDate) {
+      alert("Check-out date must be after the check-in date");
+      this.value = new Date(checkInDate.getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0]; // Set check-out to the next day
+    }
+  });
+
+</script>

@@ -1,0 +1,144 @@
+<link rel="stylesheet" href="/css/bookingform.css">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<div id="bookingForm" class="booking-form-container" style="display: none;">
+    <button class="close" onclick="closeBookingForm()">X</button>
+    <h3>Booking Form</h3>
+    <div>
+      <label>Room:</label>
+      <input type="text" id="roomTitle" name="room-title" disabled />
+    </div>
+    <div>
+      <label>Price per Night:</label>
+      <input type="text" id="roomPrice" name="room-price" disabled />
+    </div>
+    <div>
+      <label>Max People:</label>
+      <input type="text" id="roomMaxPeople" name="room-max-people" disabled />
+    </div>
+    <div>
+      <label>Available Rooms:</label>
+      <select id="availableRoomNumbers" name="available-room"></select>
+    </div>
+    <div>
+      <label>Check-in Date:</label>
+      <input type="date" name="check-in" id="check-in" required  />
+    </div>
+    <div>
+      <label>Check-out Date:</label>
+      <input type="date" name="check-out" id="check-out" required  />
+    </div>
+    <div>
+      <label>Number of Adults:</label>
+      <input type="number" id="numAdults" name="adults" value="1" min="1" required />
+    </div>
+    <div>
+      <label>Number of Children:</label>
+      <input type="number" id="numChildren" name="children" value="0" min="0" />
+    </div>
+    <div>
+      <label>Total Rooms:</label>
+      <input type="number" id="numRooms" name="total-rooms" value="1" min="1" required />
+    </div>
+    <button class="bookingform-btn" type="submit" onclick="handleBooking()">Submit</button>
+  </div>
+  
+  <script>
+    function openBookingForm(roomData) {
+      const room = JSON.parse(roomData); // Parse the room object
+      const params = getQueryParams();
+      document.getElementById('bookingForm').style.display = 'block';
+      document.getElementById('roomTitle').value = room.title;
+      document.getElementById('roomPrice').value = room.price + ' USD/night';
+      document.getElementById('roomMaxPeople').value = room.maxPeople;
+      document.querySelector('.bookingform-btn').id = room.roomId;
+      const roomSelect = document.getElementById('availableRoomNumbers');
+      roomSelect.innerHTML = ''; // Clear previous options
+  
+      room.roomNumbers.filter(room => !room.booked).forEach((roomNumber) => {
+          const option = document.createElement('option');
+          option.value = roomNumber.number;
+          option.text = `Room ${roomNumber.number}`;
+          roomSelect.add(option);
+      });
+  
+
+      document.getElementById('check-in').value = params.startDate;
+      document.getElementById('check-out').value = params.endDate;
+
+
+      // Set default values for adults, children, and rooms
+      document.getElementById('numAdults').value = params.adults || 1;
+      document.getElementById('numChildren').value =  params.children ||0;
+      document.getElementById('numRooms').value =  params.rooms || 1;
+    }
+  
+    function closeBookingForm() {
+      document.getElementById('bookingForm').style.display = 'none';
+    }
+    async function handleBooking(){
+
+    }
+    async function handleBooking() {
+  const checkInDate = document.querySelector('input[name="check-in"]').value;
+  const checkOutDate = document.querySelector('input[name="check-out"]').value;
+  const adults = document.querySelector('input[name="adults"]').value;
+  const children = document.querySelector('input[name="children"]').value;
+  const roomId = document.querySelector('.bookingform-btn').id;
+  const totalPrice = document.querySelector('input[name="room-price"]').value;
+  const userId = '<%= user ? user._id : null %>'; 
+  const hotelId = '<%= hotel.hotelId %>';
+
+  const bookingData = {
+    userId: userId,
+    hotelId: hotelId,
+    roomId: roomId,
+    checkInDate: checkInDate,
+    checkOutDate: checkOutDate,
+    guests: {
+      adults: parseInt(adults),
+      children: parseInt(children),
+    },
+    totalPrice: parseFloat(totalPrice),
+  };
+  try {
+    const res = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/bookings', bookingData, {
+      withCredentials: true,
+    });
+    alert('Booking successful!');
+    window.location.reload();
+} catch (error) {
+    console.error('Error:', error);
+    if (error.response && error.response.status === 403) {
+    alert('Your account got locked. Please mail to my business email to ask for activating your account.');
+    handleLogout(); 
+}
+    alert(error.response.data.message);
+  }
+}
+document.querySelector('input[name="check-in"]').addEventListener('change', function() {
+    const checkInDate = new Date(this.value);
+    const checkOutInput = document.querySelector('input[name="check-out"]');
+    const checkOutDate = new Date(checkOutInput.value);
+
+    // If the check-out date is before or equal to the check-in date, update it
+    if (checkOutDate <= checkInDate) {
+      checkOutInput.value = new Date(checkInDate.getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0]; // Set check-out to the next day
+    }
+
+    // Set minimum check-out date to one day after check-in
+    checkOutInput.min = new Date(checkInDate.getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0];
+  });
+
+  document.querySelector('input[name="check-out"]').addEventListener('change', function() {
+    const checkInDate = new Date(document.querySelector('input[name="check-in"]').value);
+    const checkOutDate = new Date(this.value);
+
+    // If the check-out date is before the check-in date, reset it
+    if (checkOutDate <= checkInDate) {
+      alert("Check-out date must be after the check-in date");
+      this.value = new Date(checkInDate.getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0]; // Set check-out to the next day
+    }
+  });
+  
+  </script>

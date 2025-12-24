@@ -1,0 +1,119 @@
+<link rel="stylesheet" href="/css/carousell.css">
+<div>
+  <div id="attractivePlacesCarousel">
+      <h2 class="attractivelist-title">Attractive Places</h2>
+      <div class="attractive-list">
+        <% cities.forEach(function(city, index) { %>
+          <div class="attractive-item" onclick="handleCityClick('<%= city.name %>')">
+            <img
+              src="<%= city.img %>"
+              alt="<%= city.name %> image"
+              class="attractive-img"
+            />
+            <div class="attractive-titles">
+              <h1><%= city.name %></h1>
+              <h2><%= city.count %> hotels</h2>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <% if (cities.length > 0) { %>
+        <div class="carousel-controls">
+          <button onclick="scrollLeftCarousel()">	<i style='font-size:24px' class='fas'>&#xf104;</i>
+          </button>
+          <button onclick="scrollRightCarousel()"><i style='font-size:24px' class='fas'>&#xf105;</i>
+          </button>
+        </div>
+      <% } %>
+  </div>
+
+  <div id="hotelSuggestions">
+      <h1 class="hotellist-title">Hotel Suggestions</h1>
+      <div class="hotels-list">
+        <% if (randomHotels.length === 0) { %>
+          <p>No hotels found.</p>
+        <% } else { %>
+          <% randomHotels.forEach(function(hotel) { %>
+            <div class="hotel-card" onclick="handleCityClick('<%= hotel.name %>')">
+              <div class="hotel-image">
+                <img
+                  src="<%= hotel.photos[0] %>"
+                  alt="<%= hotel.name %>"
+                  class="hotel-photo"
+                />
+              </div>
+              <div class="hotel-details">
+                <h3><%= hotel.title %></h3>
+                <div><strong>Hotel Type:</strong> <%= hotel.type || 'N/A' %></div>
+                <div><strong>Location:</strong> <%= hotel.city %></div>
+                <div><%= hotel.desc %></div>
+                <div>
+                  <strong>Rating:</strong>
+                  <span class="star-rating" data-rating="<%= hotel.rating %>"></span>
+                </div>
+                <div>
+                  <strong>Cheapest Price:</strong> $<%= hotel.cheapestPrice %> per night
+                </div>
+                <div>
+                  <strong>Distance to City Center:</strong> <%= hotel.distance ? hotel.distance + ' km' : 'N/A' %>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+  </div>
+</div>
+
+<script>
+    const scrollLeftCarousel = () => {
+      const carousel = document.querySelector('.attractive-list');
+      carousel.scrollBy({
+          left: -300, 
+          behavior: 'smooth'
+      });
+    }
+
+    const scrollRightCarousel = () => {
+      const carousel = document.querySelector('.attractive-list');
+      carousel.scrollBy({
+          left: 300, 
+          behavior: 'smooth'
+      });
+    }
+
+    function renderStars(rating) {
+      const totalStars = 5;
+      const filledStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 !== 0;
+      const emptyStars = totalStars - filledStars - (hasHalfStar ? 1 : 0);
+
+      let starsHtml = '';
+
+      for (let i = 0; i < filledStars; i++) {
+          starsHtml += '<span class="filled-star">★</span>';
+      }
+
+      if (hasHalfStar) {
+          starsHtml += '<span class="half-star">☆</span>'; 
+      }
+
+      for (let i = 0; i < emptyStars; i++) {
+          starsHtml += '<span class="empty-star">☆</span>';
+      }
+
+      return starsHtml;
+    }
+
+    // Ensure DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const starElements = document.querySelectorAll('.star-rating');
+        starElements.forEach(element => {
+            const rating = parseFloat(element.getAttribute('data-rating'));
+            element.innerHTML = renderStars(rating);
+        });
+    });
+   function handleCityClick(cityName){
+    window.location.href=`/hotel?location=${cityName}`;
+   }
+</script>

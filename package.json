@@ -1,0 +1,18 @@
+{
+  "name": "group-project-cosc3060-cosc3061-2024b-g2",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "install": "cd client && npm install && cd ../api && npm install",
+    "build": "cd client && npm run build && cd ../api && npm run build",
+    "start": "concurrently \"npm run start:client\" \"npm run start:api\"",
+    "start:client": "cd client && npm start",
+    "start:api": "cd api && npm start"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

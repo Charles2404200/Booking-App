@@ -1,0 +1,244 @@
+/* Titles */
+.attractivelist-title, .hotellist-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  font-weight: 700;
+  color :var( --sidebar--text-color);
+}
+
+/* Carousel Styles */
+#attractivePlacesCarousel {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.attractive-list {
+  display: flex;
+  overflow: hidden; /* Hide the scrollbar */
+  padding: 20px 0;
+  scroll-behavior: smooth;
+}
+
+.attractive-item {
+  min-width: 300px; /* Ensures each item has a fixed width */
+  margin: 0 15px;
+  border: 1px var(--user-profile--border-color);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  background-color:  var(--attractive-item--background-color);
+  box-shadow: 0 6px 10px var(--sidebar-shadow);
+}
+
+.attractive-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 20px var(--sidebar--hover-color);
+}
+
+.attractive-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 4px solid var( --changeImg--background-color);
+}
+
+.attractive-titles {
+  padding: 15px;
+  text-align: center;
+}
+
+.attractive-titles h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: var( --attractive-titles--text-color);
+  font-weight: 600;
+}
+
+.attractive-titles h2 {
+  font-size: 1rem;
+  color:var(--attractive-h2--text-color);
+  margin-top: 5px;
+}
+
+/* Carousel Controls */
+.carousel-controls {
+    position: absolute;
+    top: 50%; /* Adjust this value if needed, for example, try 55% */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+
+.carousel-controls button {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  transition: background-color 0.3s ease;
+  position: relative;
+  bottom: -20px;
+}
+
+.carousel-controls button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Hotel List Styles */
+.hotels-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hotel-card {
+  border-radius: 15px;
+  overflow: hidden;
+  padding: 20px;
+  background-color:var(--attractive-item--background-color);
+  box-shadow: 0 6px 10px var(--sidebar-shadow);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.hotel-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 20px  var(--sidebar--hover-color);
+}
+
+.hotel-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+
+  border-bottom: 4px solid var( --changeImg--background-color);
+}
+
+.hotel-details {
+  margin-top: 15px;
+  font-size: 0.95rem;
+  color:var(--attractive-h2--text-color);
+}
+
+.hotel-details h3 {
+  font-size: 1.4rem;
+  color:var( --attractive-titles--text-color);
+  margin-bottom: 10px;
+}
+
+.hotel-details div {
+  margin-bottom: 8px;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.filled-star, .half-star, .empty-star {
+  font-size: 1.2rem;
+  margin-right: 5px;
+}
+
+.filled-star {
+  color: gold;
+}
+
+.empty-star {
+  color: #ddd;
+}
+
+.half-star {
+  color: gold;
+  position: relative;
+}
+
+.half-star::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+  color: gold;
+}
+
+
+
+/* Media Queries */
+@media (max-width: 1024px) {
+  .attractivelist-title, .hotellist-title {
+      font-size: 2rem;
+  }
+
+  .hotel-details h3 {
+      font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-controls button {
+      width: 35px;
+      height: 35px;
+      font-size: 1.2rem;
+  }
+
+  .hotel-details h3 {
+      font-size: 1rem;
+  }
+
+  .hotel-details div {
+      font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .attractivelist-title, .hotellist-title {
+      font-size: 1.8rem;
+  }
+
+  .hotel-details h3 {
+      font-size: 0.9rem;
+  }
+  
+  .hotel-details div {
+      font-size: 0.85rem;
+  }
+}
+/* Add this CSS to your stylesheet */
+.hotellist-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  font-weight: 700;
+  position: relative;
+  padding-top: 20px; /* Adjust to make room for the border */
+}
+
+.hotellist-title::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%; /* Adjust the width as needed */
+  height: 2px; /* Adjust the height as needed */
+  background-color: #ddd; /* Adjust the color as needed */
+  border-radius: 2px;
+}

@@ -1,0 +1,138 @@
+.post-dashboard {
+    right: 20px; /* Align it to the right side of the page */
+    padding: 20px;
+    background-color: transparent; /* Make the background transparent to blend */
+    border-radius: 10px; /* Keep rounded corners, or remove if not needed */
+    box-shadow: none; /* Remove shadow for a flat look */
+    z-index: 1100; /* Ensure it overlaps other elements */
+    transition: all 0.3s ease-in-out; /* Smooth transition effects */
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.user-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #212529; /* Dark color for better contrast */
+}
+
+.search-container {
+    margin-bottom: 25px;
+    width: 100%; /* Full width of the container */
+}
+
+.search-input {
+    width: 91%; /* Full width for search input */
+    padding: 12px;
+    border: 1px solid var(--sidebar--border-color); /* Light gray border */
+    border-radius: 8px; /* Rounded input */
+    font-size: 15px;
+    box-shadow: none; /* Remove shadow for a flat look */
+    margin-bottom: 20px; /* Added space below the search box */
+    background-color: var(--ipnut--background-color);
+}
+
+.sort-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.sort-options label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color:var(--coal--text-color); /* Medium gray for labels */
+}
+
+.sort-options input[type="radio"] {
+    margin-right: 10px;
+}
+
+
+
+
+.order-sort select {
+    width: 100%; 
+    padding: 10px;
+    border: 1px solid var(--sidebar--border-color);
+    border-radius: 8px;
+    font-size: 15px;
+    box-shadow: none; /* Remove shadow for a flat look */
+    background-color: var(--ipnut--background-color);
+    color: var( --sidebar--text-color);
+}
+
+@media (max-width: 768px) {
+    .order-sort{
+        display: flex;
+        gap:5px;
+    }
+    .post-dashboard {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%; /* Full width on smaller screens */
+        padding: 20px;
+        box-shadow: none; /* Remove shadow for mobile */
+        margin-bottom: 20px;
+    }
+
+    .user-profile {
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .search-container {
+        margin-bottom: 20px;
+    }
+    .order-sort select {
+        width: 20%;
+    }
+
+    .sort-options {
+        gap:5px;
+    }
+
+    .sort-options label {
+        margin-bottom: 0;
+        padding-bottom: 3px;
+        font-size: 16px;
+    }
+
+   
+   
+}
+
+@media (max-width: 480px) {
+    .post-dashboard {
+        padding: 15px; /* Reduced padding for smaller devices */
+    }
+
+    .user-avatar {
+        width: 50px;
+        height: 50px; /* Smaller avatar */
+    }
+
+    .user-name {
+        font-size: 18px; /* Smaller font size */
+    }
+
+    .search-input {
+        padding: 10px; /* Reduced padding for smaller input */
+        font-size: 14px; /* Smaller font size */
+    }
+
+    
+}

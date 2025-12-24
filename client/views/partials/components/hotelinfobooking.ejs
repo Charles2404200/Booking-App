@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="/css/hotelinfobooking.css">
+
+<div class="hotel-info-container">
+    <div class="hotel-gallery">
+        <div class="main-image">
+            <img src="<%= hotel.photos[0] %>" alt="Main Hotel Image" />
+        </div>
+        <div class="thumbnails">
+            <% hotel.photos.slice(1).forEach(photo => { %>
+                <img src="<%= photo %>" alt="Hotel Image" class="thumbnail" />
+            <% }) %>
+        </div>
+    </div>
+
+    <div class="hotel-info-details">
+        <h1><%= hotel.hotelName %></h1>
+        <p><%= hotel.address %></p>
+        <p><strong>Rating:</strong> <%= hotel.rating %> stars</p>
+        <p><strong>Distance:</strong> <%= hotel.distance %> km from center</p>
+        <p><strong>Cheapest Price:</strong> $<%= hotel.cheapestPrice %>/night</p>
+        <p><strong>Reviews:</strong> <%= hotel.reviewsCount %> reviews</p>
+     
+        <p class="hotel-facilities">
+            Facilities: 
+            <% hotel.facilities.forEach(function(facility, index) { %>
+                <%= facility %><% if(index < hotel.facilities.length - 1) { %> • <% } %>
+            <% }) %>
+        </p>
+        <p class="hotel-reviews">Reviews Count: <%= hotel.reviewsCount %></p>
+    </div>
+</div>

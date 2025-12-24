@@ -1,0 +1,279 @@
+<link rel="stylesheet" href="/css/createuserform.css">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<div id="overlay" class="overlay" style="display: none;"></div>
+<form id="create-user-form" enctype="multipart/form-data" style="display: none;">
+    <div class="close-create-btn" onclick="closeCreateUserForm()">X</div>
+    
+    <!-- Hidden input to determine if updating an existing user -->
+    <input type="hidden" id="create-user-id" name="userId" value="">
+
+
+<div class = "form-container">
+    <div class="form-group">
+        <label for="create-user-username">Username:</label>
+        <input type="text" id="create-user-username" name="username" required>
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-fname">First Name:</label>
+        <input type="text" id="create-user-fname" name="fname" required>
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-lname">Last Name:</label>
+        <input type="text" id="create-user-lname" name="lname" required>
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-email">Email:</label>
+        <input type="email" id="create-user-email" name="email" required>
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-password">Password:</label>
+        <input type="password" id="create-user-password" name="password" required>
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-confirm-password">Confirm Password:</label>
+        <input type="password" id="create-user-confirm-password" name="confirmPassword" required>
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-role">Role:</label>
+        <select id="create-user-role" name="role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-date">Date:</label>
+        <input type="date" id="create-user-date" name="date">
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-country">Country:</label>
+        <input type="text" id="create-user-country" name="country">
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-img">Image File:</label>
+        <input type="file" id="create-user-img" name="img" accept="image/*" onchange="toggleImageInput('file')">
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-img-url">Image URL:</label>
+        <input type="url" id="create-user-img-url" name="imgUrl" onchange="toggleImageInput('url')">
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-city">City:</label>
+        <input type="text" id="create-user-city" name="city">
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-phone">Phone:</label>
+        <input type="tel" id="create-user-phone" name="phone">
+    </div>
+
+    <div class="form-group">
+        <label for="create-user-status">Status:</label>
+        <select id="create-user-status" name="status">
+            <option value="active">Active</option>
+            <option value="disabled">Disabled</option>
+            <option value="lock">Lock</option>
+        </select>
+    </div>
+</div>
+     <!-- Error and loading messages -->
+     <div id="create-user-error-message" style="display:none;color:red;"></div>
+     <div id="create-user-loading-message" style="display:none;color:green;">Processing...</div>
+    <div class="form-group">
+        <button type="button" id="create-user-button" class="btn btn-primary" onclick="handleCreateOrUpdateUser()">Submit</button>
+</div>
+</form>
+<script>
+// Open the create user form with overlay
+function openCreateUserForm() {
+    document.getElementById('overlay').style.display = 'block';  // Show overlay
+    document.getElementById('create-user-form').style.display = 'block';  // Show form
+}
+
+// Close the create user form and hide overlay
+function closeCreateUserForm() {
+    document.getElementById('overlay').style.display = 'none';  // Hide overlay
+    document.getElementById('create-user-form').style.display = 'none';  // Hide form
+}
+
+async function handleCreateOrUpdateUser() {
+    const userId = document.getElementById('create-user-id').value;
+    const username = document.getElementById('create-user-username').value;
+    const fname = document.getElementById('create-user-fname').value;
+    const lname = document.getElementById('create-user-lname').value;
+    const email = document.getElementById('create-user-email').value;
+    const password = document.getElementById('create-user-password').value;
+    const confirmPassword = document.getElementById('create-user-confirm-password').value;
+    const role = document.getElementById('create-user-role').value === 'admin';
+    const date = document.getElementById('create-user-date').value;
+    const country = document.getElementById('create-user-country').value;
+    const city = document.getElementById('create-user-city').value;
+    const phone = document.getElementById('create-user-phone').value;
+    const status = document.getElementById('create-user-status').value;
+    const imgFile = document.getElementById('create-user-img').files[0];
+    const imgUrl = document.getElementById('create-user-img-url').value;
+
+    const errorMessageElement = document.getElementById('create-user-error-message');
+    const loadingMessageElement = document.getElementById('create-user-loading-message');
+    const createUserButton = document.getElementById('create-user-button');
+    
+    errorMessageElement.style.display = 'none';
+    loadingMessageElement.style.display = 'none';
+
+    // Ensure only one method is used to upload an image
+    if (imgFile && imgUrl) {
+        showErrorMessage("Please provide either an image file or a URL, not both.");
+        return;
+    }
+
+    // Validate password match and strength only if a password is provided
+    if (password && password !== confirmPassword) {
+        showErrorMessage("Password and Confirm Password do not match");
+        return;
+    }
+
+    if (password && !validatePassword(password)) {
+        return;
+    }
+
+    loadingMessageElement.style.display = 'block';
+    createUserButton.disabled = true;
+
+    try {
+        let imageData = '';
+        if (imgFile) {
+            const formData = new FormData();
+            formData.append('imageFile', imgFile);
+
+            const uploadResponse = await axios.post('/update-img', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                withCredentials: true,
+            });
+
+            imageData = uploadResponse.data.fileUrl;
+        } else if (imgUrl) {
+            imageData = imgUrl;
+
+            if (userId) {
+                const formData = new FormData();
+                formData.append('imageFile', '');
+
+                const userImg = "<%= user ? user.img : '' %>";
+                if (userImg.startsWith('https://pub-93b162f2c2324969b45e28374787425b.r2.dev/')) {
+                    await axios.post(`/update-img?userImg=${userImg}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                        withCredentials: true,
+                    });
+                }
+            }
+        }
+
+        const userData = {
+            username,
+            fname,
+            lname,
+            email,
+            isAdmin: role,
+            date,
+            country,
+            city,
+            phone,
+            status,
+            img: imageData, // Set the image data
+        };
+
+        if (password) {
+            userData.password = password;
+        }
+
+        let response;
+        if (userId) {
+            response = await axios.put(`https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/users/${userId}`, userData, {
+                withCredentials: true,
+            });
+        } else {
+            response = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/users/admin', userData, {
+                withCredentials: true,
+            });
+        }
+
+        alert(`User ${userId ? 'updated' : 'created'} successfully!`);
+        window.location.reload();
+    } catch (error) {
+        showErrorMessage(error.response?.data?.message || `Failed to ${userId ? 'update' : 'create'} user`);
+    } finally {
+        loadingMessageElement.style.display = 'none';
+        createUserButton.disabled = false;
+    }
+}
+
+
+function showErrorMessage(message) {
+    const errorMessage = document.getElementById('create-user-error-message');
+    errorMessage.innerText = message;
+    errorMessage.style.display = 'block';
+}
+
+function validatePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChars = /[!@#?$%^&*(),.?":{}|<>]/.test(password);
+    const hasInvalidChars = /[<>]/.test(password);  // Check for < or >
+
+    if (password.length < minLength) {
+      showErrorMessage('Password must be at least 8 characters long.');
+      return false;
+    }
+    if (!hasUpperCase) {
+      showErrorMessage('Password must include at least one uppercase letter.');
+      return false;
+    }
+    if (!hasLowerCase) {
+      showErrorMessage('Password must include at least one lowercase letter.');
+      return false;
+    }
+    if (!hasNumbers) {
+      showErrorMessage('Password must include at least one number.');
+      return false;
+    }
+    if (!hasSpecialChars) {
+      showErrorMessage('Password must include at least one special character.');
+      return false;
+    }
+    if (hasInvalidChars) {
+      showErrorMessage('Password must not include < or > characters.');
+      return false;
+    }
+
+    return true;
+}
+function toggleImageInput(source) {
+    const fileInput = document.getElementById('create-user-img');
+    const urlInput = document.getElementById('create-user-img-url');
+
+    if (source === 'file' && fileInput.files.length > 0) {
+        urlInput.disabled = true;
+    } else if (source === 'url' && urlInput.value.trim() !== '') {
+        fileInput.disabled = true;
+    } else {
+        fileInput.disabled = false;
+        urlInput.disabled = false;
+    }
+}
+</script>

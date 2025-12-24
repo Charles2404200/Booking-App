@@ -1,0 +1,104 @@
+<div class="hotelpage-container">
+    <%- include('../partials/components/hoteldashboard') %>
+    <%- include('../partials/components/hotellist') %>
+</div>
+<script>
+   let searchHotels = '<%- JSON.stringify(searchHotels) %>';  // This injects the server-side searchHotels data
+try {
+    searchHotels = JSON.parse(searchHotels);  // Convert string to an array
+} catch (error) {
+    console.error('Error parsing searchHotels:', error);  // Handle any JSON parsing errors
+}
+function getQueryParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = {};
+    urlParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    return params;
+  }
+    // Function to render the hotel list based on the current filter
+    function renderHotelList(filter) {
+    const filteredHotels = [];
+    const query = getQueryParams();  // This will hold the hotels that match the filter criteria.
+    console.log("Filter:", filter);  // For debugging
+
+    // Loop through each hotel in searchHotels array using forEach
+    searchHotels.forEach(hotel => {
+        console.log(`Checking hotel: ${hotel.hotelName}`);
+
+        // Check by types (if filter.types has any values)
+        let matchesType = true;  // Assume hotel matches if no types are specified
+        if (filter.types.length > 0) {
+            matchesType = filter.types.includes(hotel.type);
+            console.log(`  Matches type: ${matchesType}`);
+        }
+
+        // Check by facilities (if filter.facilities has any values)
+        let matchesFacilities = true;  // Assume hotel matches if no facilities are specified
+        if (filter.facilities.length > 0) {
+            matchesFacilities = filter.facilities.every(facility => hotel.facilities.includes(facility));
+            console.log(`  Matches facilities: ${matchesFacilities}`);
+        }
+
+        // Check by ratings (if filter.ratings has any values)
+        let matchesRating = true;  // Assume hotel matches if no ratings are specified
+        if (filter.ratings.length > 0) {
+            matchesRating = filter.ratings.includes(Math.floor(hotel.rating));
+            console.log(`  Matches rating: ${matchesRating}`);
+        }
+
+        // Check by price range
+        const matchesPrice = hotel.cheapestPrice >= filter.priceRange.min && hotel.cheapestPrice <= filter.priceRange.max;
+        console.log(`  Matches price: ${matchesPrice}`);
+
+        // If the hotel matches all criteria, add it to the filteredHotels array
+        if (matchesType && matchesFacilities && matchesRating && matchesPrice) {
+            filteredHotels.push(hotel);
+        }
+    });
+
+    const hotelListContainer = document.getElementById('row-hotellist');
+    hotelListContainer.innerHTML = ''; // Clear current hotel list
+
+    // Render the filtered hotel list
+    if (filteredHotels.length > 0) {
+        filteredHotels.forEach(hotel => {
+            hotelListContainer.innerHTML += `
+                <div class="hotel-card card mb-4">
+                    <div class="row no-gutters">
+                        <div class="hotel-image-container">
+                            <img src="${hotel.photos[0] || 'images/defaulthotel.png'}" class="hotel-image" alt="Hotel Image">
+                            <div class="hotel-thumbnails">
+                                ${hotel.photos.slice(1, 4).map(photo => `<img src="${photo}" class="hotel-thumbnail" alt="Hotel Thumbnail">`).join('')}
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${hotel.hotelName}</h5>
+                            <p class="card-text"><span class="hotel-type">Khách sạn</span>
+                                <span class="hotel-rating" data-rating="${hotel.rating || 0}"></span></p>
+                            <p class="card-text"><i class="fa fa-map-marker-alt"></i> ${hotel.address}, ${hotel.city}</p>
+                            <p class="card-text facilities">${hotel.facilities.join(' • ') || 'No facilities listed'}</p>
+                            ${hotel.rooms.map(room => `<div class="room-details"><h6 class="room-title">${room.title} (${room.availableRooms} rooms available)</h6></div>`).join('')}
+                        </div>
+                        <div class="price-section">
+                            <h3 class="new-price">${hotel.cheapestPrice} $</h3>
+                            <a href="/booking?hotelId=${hotel.hotelId}&location=${hotel.hotelName}&startDate=${query.startDate}&endDate=${query.endDate}&adults=${query.adults}&children=${query.children}&rooms=${query.rooms}" class="btn btn-primary">Chọn phòng</a>                        </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Render the star ratings for each hotel
+        document.querySelectorAll('.hotel-rating').forEach(starElement => {
+            const rating = parseFloat(starElement.getAttribute('data-rating'));
+            starElement.innerHTML = renderStars(rating);
+        });
+
+    } else {
+        hotelListContainer.innerHTML = '<p>No hotels match your criteria.</p>';
+    }
+}
+   
+</script>

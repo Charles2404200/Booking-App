@@ -1,0 +1,198 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link rel="stylesheet" href="/css/forgot.css">
+
+<div class="forgot-password-container">
+  <h2>Forgot Password</h2>
+  <div class="close-btn" onclick="closeForgot()">X</div>
+
+  <!-- Form to handle all steps: Email, OTP, and Reset Password -->
+  <form id="forgot-password-form" onsubmit="return false;">
+      <!-- Email Input -->
+      <div class="form-group" id="email-input">
+          <label for="emailForgot">Enter your email address:</label>
+          <input
+              type="email"
+              id="emailForgot"
+              name="emailForgot"
+              required
+          />
+      </div>
+
+      <!-- OTP Input (hidden initially) -->
+      <div class="form-group" id="otp-input" style="display: none;">
+          <label for="otp">Enter OTP:</label>
+          <input
+              type="text"
+              id="otp"
+              name="otp"
+              required
+          />
+      </div>
+
+      <!-- New Password Input (hidden initially) -->
+      <div class="form-group" id="new-password-input" style="display: none;">
+          <label for="newPassword">New Password:</label>
+          <input
+              type="password"
+              id="newPassword"
+              name="newPassword"
+              required
+          />
+      </div>
+
+      <div class="form-group" id="confirm-password-input" style="display: none;">
+          <label for="confirmNewPassword">Confirm New Password:</label>
+          <input
+              type="password"
+              id="confirmNewPassword"
+              name="confirmNewPassword"
+              required
+          />
+      </div>
+
+      <!-- Error and Success Messages -->
+      <p class="error-forgot-message" id="error-forgot-message"></p>
+      <p class="success-message" id="success-message"></p>
+
+      <!-- Submit Button -->
+      <button type="button" class="submit-btn" id="submit-forgot-btn" onclick="handleNextStep()">Send OTP</button>
+
+      <!-- Loading Message -->
+      <div id="loading-message" class="loading-message" style="display: none;">Loading...</div> 
+  </form>
+</div>
+
+<script>
+  let currentStep = 'email';
+
+  function validateForgotPassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChars = /[!@#?$%^&*(),.?":{}|<>]/.test(password);
+    const hasInvalidChars = /[<>]/.test(password);  
+
+    if (password.length < minLength) {
+      showErrorForgotMessage('Password must be at least 8 characters long.');
+      return false;
+    }
+    if (!hasUpperCase) {
+      showErrorForgotMessage('Password must include at least one uppercase letter.');
+      return false;
+    }
+    if (!hasLowerCase) {
+      showErrorForgotMessage('Password must include at least one lowercase letter.');
+      return false;
+    }
+    if (!hasNumbers) {
+      showErrorForgotMessage('Password must include at least one number.');
+      return false;
+    }
+    if (!hasSpecialChars) {
+      showErrorForgotMessage('Password must include at least one special character.');
+      return false;
+    }
+    if (hasInvalidChars) {
+      showErrorMessage('Password must not include < or > characters.');
+      return false;
+    }
+
+    return true;
+  }
+
+  function showErrorForgotMessage(message) {
+    const errorMessage = document.getElementById('error-forgot-message');
+    errorMessage.innerText = message;
+    errorMessage.style.display = 'block';
+  }
+
+  async function handleSendOTP(email) {
+    try {
+        const response = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/auth/forgot-password', { email });
+        showSuccessMessage('OTP sent to your email. Check your Spam or Trash folder if you cannot find the email.');
+        showOTPInputForm();
+    } catch (error) {
+        showErrorMessage(error.response?.data?.message || 'Failed to send reset email');
+    }
+}
+
+async function handleVerifyOTP(email, otp) {
+    try {
+        const response = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/auth/verify-otp', { email, otp });
+        showSuccessMessage('OTP verified. Please enter your new password.');
+        showResetPasswordForm();
+    } catch (error) {
+        showErrorMessage(error.response?.data?.message || 'Invalid OTP');
+    }
+}
+
+async function handleResetPassword(email, newPassword, confirmNewPassword) {
+    
+    if (newPassword !== confirmNewPassword) {
+        showErrorForgotMessage('Passwords do not match');
+        return;
+    }
+    if (!validateForgotPassword(newPassword)) {
+        return;
+    }
+  
+
+    try {
+        const response = await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/auth/reset-password', { email, newPassword });
+        showSuccessMessage('Password reset successful. Redirecting to login...');
+        setTimeout(() => window.location.href = '/', 2000);
+    } catch (error) {
+        showErrorForgotMessage(error.response?.data?.message || 'Failed to reset password');
+    }
+}
+
+  function showErrorMessage(message) {
+    const errorMessage = document.getElementById('error-message');
+    errorMessage.innerText = message;
+    errorMessage.style.display = 'block';
+  }
+
+  function showSuccessMessage(message) {
+    const successMessage = document.getElementById('success-message');
+    successMessage.innerText = message;
+    successMessage.style.display = 'block';
+  }
+
+  function showOTPInputForm() {
+    document.getElementById('otp-input').style.display = 'block';
+    document.getElementById('submit-forgot-btn').innerText = 'Verify OTP';
+    currentStep = 'otp';
+  }
+
+  function showResetPasswordForm() {
+    document.getElementById('new-password-input').style.display = 'block';
+    document.getElementById('confirm-password-input').style.display = 'block';
+    document.getElementById('submit-forgot-btn').innerText = 'Reset Password';
+    currentStep = 'reset';
+  }
+
+  async function handleNextStep() {
+    const email = document.getElementById('emailForgot').value;
+    const otp = document.getElementById('otp').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+    const submitButton = document.getElementById('submit-forgot-btn');
+
+    try {
+      submitButton.disabled = true;
+
+      if (currentStep === 'email') {
+        await handleSendOTP(email);
+      } else if (currentStep === 'otp') {
+        await handleVerifyOTP(email, otp);
+      } else if (currentStep === 'reset') {
+        await handleResetPassword(email, newPassword, confirmNewPassword);
+      }
+    } catch (error) {
+      showErrorForgotMessage(error.response?.data?.message || error.message || 'An error occurred');
+    } finally {
+      submitButton.disabled = false;
+    }
+  }
+</script>

@@ -1,0 +1,180 @@
+<link rel="stylesheet" href="/css/forum.css">
+
+<div class="forum-app">
+    <!-- Left Sidebar -->
+    <div class="left-sidebar">
+        <%- include('../partials/components/postdashboard')  %> <!-- User dashboard here -->
+
+        <!-- Sponsored Content Below User Dashboard -->
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+        <!-- Dropdown Toggle cho Left Sidebar -->
+<div class="dropdown-toggle-left" onclick="toggleSidebar('left-sidebar')">
+    <span>Dashboard</span>
+    <i style='font-size:24px' class='fas'>&#xf105;</i>
+</div>
+
+        <!-- Post Input -->
+        <div class="post-input-container">
+            <div class="post-input" onclick="openPostForm()">
+                <img src="<%= user && user.img ? user.img : '/images/clone.png' %>" alt="User Avatar" class="user-avatar">
+                <input type="text" placeholder="<%= user ? user.username : 'Hi' %>, What's on your mind?" readonly>
+            </div>
+        </div>
+
+        <!-- Post Dashboard and Post Card List -->
+        <%- include('../partials/components/postcardlist')  %>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="right-sidebar">
+        <!-- Moved Left Sidebar Content -->
+        <div class="important-links sidebar-section">
+            <a href="#" class="sidebar-link">
+                <img src="https://cdn.pixabay.com/photo/2017/06/10/07/22/news-2389226_960_720.png" alt="Latest News" class="sidebar-icon">
+                <span class="sidebar-text">Latest News</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <img src="https://cdn-icons-png.flaticon.com/512/8345/8345290.png" alt="Friends" class="sidebar-icon">
+                <span class="sidebar-text">Friends</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <img src="https://www.iconpacks.net/icons/1/free-user-group-icon-296-thumb.png" alt="Groups" class="sidebar-icon">
+                <span class="sidebar-text">Groups</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <img src="https://cdn-icons-png.freepik.com/512/8170/8170721.png" alt="Marketplace" class="sidebar-icon">
+                <span class="sidebar-text">Marketplace</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <img src="https://cdn-icons-png.flaticon.com/512/4406/4406124.png" alt="Watch" class="sidebar-icon">
+                <span class="sidebar-text">Watch</span>
+            </a>
+            <a href="#" class="sidebar-link">See More</a>
+        </div>
+
+        <div class="shortcut-links sidebar-section">
+            <p>Your Shortcuts</p>
+            <a href="#" class="sidebar-link">
+                <img src="https://cdn-icons-png.flaticon.com/256/1668/1668966.png" alt="Hotel" class="sidebar-icon">
+                <span class="sidebar-text">Hotel</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <img src="https://www.freeiconspng.com/thumbs/airplane-icon-png/airplane-icon-png-png-22.png" alt="Plane" class="sidebar-icon">
+                <span class="sidebar-text">Plane</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <img src="https://www.freeiconspng.com/thumbs/bus-icon/bus-stop-symbol-icon-28.png" alt="Bus" class="sidebar-icon">
+                <span class="sidebar-text">Bus</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <img src="https://png.pngtree.com/png-vector/20230407/ourmid/pngtree-tour-guide-line-icon-vector-png-image_6680322.png" alt="Tour" class="sidebar-icon">
+                <span class="sidebar-text">Tour</span>
+            </a>
+        </div>
+
+        <!-- Original Right Sidebar Content -->
+        <div class="heading-link">
+            <h4>Events</h4>
+            <a href="#">See All</a>
+        </div>
+        <div class="events">
+            <div class="left-event">
+                <h4>13</h4>
+                <span>August</span>
+            </div>
+            <div class="right-event">
+                <h4>Social Media</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Wisdom Park</p>
+                <a href="#">More Info</a>
+            </div>
+        </div>
+
+       
+       
+    </div>
+</div>
+
+
+
+<!-- Post Form Modal -->
+<div id="Post-Form" style="display: none;">
+    <%- include('../partials/components/postform')  %>
+</div>
+
+
+<script>
+function openPostForm(postId = null, postText = null, postTitle = null, postImg = null) {
+    const postForm = document.getElementById('Post-Form');
+    const titleTextarea = document.querySelector('.post-textarea-title');
+    const textTextarea = document.querySelector('.post-textarea-text');
+    const imageUrlInput = document.getElementById('imageUrl');
+
+    const userStatus = '<%= user ? user.status : null %>';
+    const user = '<%= user ? JSON.stringify(user) : null %>'; 
+    const postSubmitBtn = document.querySelector('.post-submit-button');
+
+    if (userStatus === 'disabled') {
+        if (confirm("Your account is disabled. Please activate your account in your profile.")) {
+            window.location.href = '/profile';
+        }
+        return; // Exit the function if the user is disabled
+    } 
+    
+    if (!user) {
+        openLogin();
+        return; // Exit the function if the user is not logged in
+    }
+
+    // Clear the previous data
+    titleTextarea.value = '';
+    textTextarea.value = '';
+    imageUrlInput.value = '';
+    postImageFile = null;
+    postSubmitBtn.onclick = null;
+
+    if (postTitle || postText || postImg) {
+        // If a post is provided, pre-fill the form with its data
+        titleTextarea.value = postTitle || '';
+        textTextarea.value = postText || '';
+        if (postImg && postImg.startsWith('/uploads')) {
+            imageUrlInput.value = '';  // Clear URL input
+            postImageFile = null;  // Clear file input
+        } else if (postImg) {
+            imageUrlInput.value = postImg; // Set the image URL
+        }
+
+        postSubmitBtn.onclick = function() {
+            handleEdit(postId, postImg);
+        };
+    } else {
+        postSubmitBtn.onclick = handlePost; 
+    }
+
+    // Show the post form
+    postForm.style.display = 'block';
+}
+function toggleSidebar(sidebarClass) {
+        const sidebar = document.querySelector(`.${sidebarClass}`);
+        sidebar.classList.toggle('show-sidebar');
+    }
+
+ // Function to adjust the top position of the sidebar based on scroll
+ function adjustSidebarPosition() {
+        const sidebar = document.querySelector('.left-sidebar');
+        const scrollPosition = window.scrollY; // Get the scroll position
+
+        if (scrollPosition > 200) {
+            // If scrolled beyond 400px, change the top position to 17%
+            sidebar.style.top = '17%';
+        } else {
+            // If scrolled less than 400px, keep the top position at 33%
+            sidebar.style.top = '33%';
+        }
+    }
+
+    // Attach the scroll event listener
+    window.addEventListener('scroll', adjustSidebarPosition);
+</script>

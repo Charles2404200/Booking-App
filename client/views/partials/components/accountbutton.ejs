@@ -1,0 +1,197 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link rel="stylesheet" href="/css/accountbutton.css">
+
+<div class="account-button" id="accountButton">
+  <!-- Include Thumbnail here -->
+  <%- include('./thumbnail') %>
+  <!-- Dropdown Menu -->
+  <div class="dropdown-menu" id="dropdownMenu" style="display: none;" >
+
+    <% if (user) { %>
+      <ul class="menu-options">
+        <div class="thumbnail-wrapper">
+          <%- include('./thumbnail') %>
+          <span class="edit-icon" onclick="openUpdateImg()">
+            <svg width="18" height="18" viewBox="0 0 24 24" focusable="false" class="edit-svg">
+              <path d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"></path>
+            </svg>
+          </span>
+        </div>
+        <li>
+          <a href="/profile">View Profile</a>
+        </li>
+        <li>
+          <a href="/forum">Forum</a>
+        </li>
+        <li>
+          <a href="/about">About</a>
+        </li>
+        <li>
+          <a href="/sitemap">Sitemap</a> <!-- Added Sitemap link here -->
+        </li>
+        <li>
+          <a href="/" onclick="handleLogout()">Logout</a>
+        </li>
+        <% if (user.isAdmin) { %>
+          <li>
+            <a href="/admin">Admin Page</a>
+          </li>
+        <% } %>
+      </ul>
+    <% } else { %>
+      <ul class="menu-options">
+        <li>
+          <a href="/forum">Forum</a>
+        </li>
+        <li>
+          <a href="/about">About</a>
+        </li>
+        <li>
+          <a href="/sitemap">Sitemap</a> <!-- Added Sitemap link for non-logged-in users too -->
+        </li>
+        <li>
+          <div class="login-button" onclick="openLogin()">Login</div>
+        </li>
+        <li>
+          <div class="signup-button" onclick="openRegister()">Register</div>
+        </li>
+      </ul>
+    <% } %>
+  </div>
+
+  <!-- Modals for Update Image and Color Picker -->
+  <div id="updateImgModal" style="display: none;">
+    <%- include('./updateimg') %>
+  </div>
+  <div id="colorPickerModal" style="display: none;">
+    <%- include('./colorpicker') %>
+  </div>
+</div>
+<div id="Login" style="display: none;">
+  <%- include('./login') %>
+</div>
+<div id="Register" style="display: none;">
+  <%- include('./register') %>
+</div>
+<div id="Forgot" style="display: none;">
+  <%- include('./Forgot') %>
+</div>
+
+<script>
+const accountButton = document.getElementById('accountButton');
+const dropdownMenu = document.getElementById('dropdownMenu');
+const updateImgModal = document.getElementById('updateImgModal');
+const colorPickerModal = document.getElementById('colorPickerModal');
+const Login = document.getElementById('Login');
+const Register = document.getElementById('Register');
+const Forgot = document.getElementById('Forgot');
+
+function closeAllModals() {
+    updateImgModal.style.display = 'none';
+    colorPickerModal.style.display = 'none';
+    Login.style.display = 'none';
+    Register.style.display = 'none';
+    Forgot.style.display = 'none';
+}
+
+accountButton.addEventListener('click', function () {
+    dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+});
+
+function openUpdateImg() {
+    closeAllModals();
+    updateImgModal.style.display = 'block';
+}
+
+function openColorPicker() {
+    closeAllModals();
+    colorPickerModal.style.display = 'block';
+}
+
+function openLogin() {
+    closeAllModals();
+    Login.style.display = 'block';
+}
+
+function openRegister() {
+    closeAllModals();
+    Register.style.display = 'block';
+}
+
+function openForgot() {
+    closeAllModals();
+    Forgot.style.display = 'block';
+}
+
+function closeLogin() {
+    closeAllModals();
+}
+
+function closeRegister() {
+    closeAllModals();
+}
+
+function closeUpdateImg() {
+    closeAllModals();
+}
+
+function closeForgot() {
+    openLogin();
+}
+
+// Stop propagation when clicking inside the modals to prevent closing
+updateImgModal.addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+
+colorPickerModal.addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+
+Login.addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+
+Register.addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+
+Forgot.addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+
+// Close modals when clicking outside of them
+document.addEventListener('click', function (event) {
+    if (
+        !accountButton.contains(event.target) &&
+        !dropdownMenu.contains(event.target) &&
+        updateImgModal.style.display === 'block' &&
+        !updateImgModal.contains(event.target) &&
+        colorPickerModal.style.display === 'block' &&
+        !colorPickerModal.contains(event.target) &&
+        Login.style.display === 'block' &&
+        !Login.contains(event.target) &&
+        Register.style.display === 'block' &&
+        !Register.contains(event.target) &&
+        Forgot.style.display === 'block' &&
+        !Forgot.contains(event.target)
+    ) {
+        closeAllModals();
+        dropdownMenu.style.display = 'none';
+    }
+});
+
+// Function to handle the logout action
+const handleLogout = async () => {
+    try {
+          // Clear the manually set cookie by setting the expiration date to the past
+          document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=None; Secure";
+        console.log('clear token')
+        await axios.post('https://group-project-cosc3060-cosc3061-2024b-g2-ylkb.onrender.com/api/auth/logout', {}, { withCredentials: true });
+
+        window.location.href = '/';  
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+};
+</script>

@@ -1,0 +1,104 @@
+<link rel="stylesheet" href="/css/hotellist.css">
+
+<section class="hotel-list container">
+    <div class="row" id="row-hotellist">
+        <!-- Hotel List -->
+        <% if (searchHotels && searchHotels.length > 0) { %>
+            <% searchHotels.forEach((hotel, index) => { %>
+                <div class="hotel-card card mb-4">
+                    <div class="row no-gutters">
+                        <!-- Hotel Images -->
+                        <div class="hotel-image-container">
+                            <img src="<%= hotel.photos[0] || 'images/defaulthotel.png' %>" class="hotel-image" alt="Hotel Image">
+                            <div class="hotel-thumbnails">
+                                <% hotel.photos && hotel.photos.slice(1, 4).forEach((photo) => { %>
+                                    <img src="<%= photo %>" class="hotel-thumbnail" alt="Hotel Thumbnail">
+                                <% }) %>
+                            </div>
+                        </div>
+
+                        <!-- Hotel Details -->
+                        <div class="card-body">
+                            <h5 class="card-title"><%= hotel.hotelName %></h5>
+                            <p class="card-text">
+                                <span class="hotel-type">Khách sạn</span>
+                                <span class="hotel-rating" data-rating="<%= hotel.rating || 0 %>"></span>
+                            </p>
+                            <p class="card-text">
+                                <i class="fa fa-map-marker-alt"></i> <%= hotel.address %>, <%= hotel.city %>
+                            </p>
+
+                            <!-- Facilities -->
+                            <p class="card-text facilities">
+                                <% if (hotel.facilities && hotel.facilities.length > 0) { %>
+                                    <% hotel.facilities.forEach(function(facility, index) { %>
+                                        <%= facility %><% if (index < hotel.facilities.length - 1) { %> • <% } %>
+                                    <% }) %>
+                                <% } else { %>
+                                    Không có tiện ích nào được liệt kê
+                                <% } %>
+                            </p>
+
+                            <!-- Room Details -->
+                            <% hotel.rooms.forEach((room) => { %>
+                                <div class="room-details">
+                                    <h6 class="room-title">
+                                        <%= room.title %> 
+                                        (<%= room.availableRooms %> phòng có sẵn)
+                                    </h6>
+                                </div>
+                            <% }) %>
+                        </div>
+
+                        <!-- Price & Booking Button -->
+                        <div class="price-section">
+                            <h3 class="new-price"><%= hotel.cheapestPrice %> $</h3>
+                            <a href="/booking?hotelId=<%= hotel.hotelId %>&location=<%= hotel.hotelName %>&startDate=<%= query.startDate %>&endDate=<%= query.endDate %>&adults=<%= query.adults %>&children=<%= query.children %>&rooms=<%= query.rooms %>" class="btn btn-primary">Chọn phòng</a>                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>Không tìm thấy khách sạn nào với tiêu chí tìm kiếm.</p>
+        <% } %>
+    </div>
+</section>
+
+<script>
+function renderStars(rating) {
+    const totalStars = 5;
+    const filledStars = Math.floor(rating);  // Get the number of fully filled stars
+    const partialStarPercentage = (rating % 1) * 100;  // Get the percentage of the partial star
+    const emptyStars = totalStars - filledStars - (partialStarPercentage > 0 ? 1 : 0);  // Remaining empty stars
+
+    let starsHtml = '';
+
+    // Render fully filled stars
+    for (let i = 0; i < filledStars; i++) {
+        starsHtml += '<span class="star filled-star">★</span>';
+    }
+
+    // Render partially filled star
+    if (partialStarPercentage > 0) {
+        starsHtml += `
+            <span class="star partial-star">
+                <span class="filled-partial" style="width: ${partialStarPercentage}%;">★</span>
+                <span class="empty-partial">★</span>
+            </span>`;
+    }
+
+    // Render empty stars
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<span class="star empty-star">★</span>';
+    }
+
+    return starsHtml;
+}
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const starElements = document.querySelectorAll('.hotel-rating');
+        starElements.forEach(element => {
+            const rating = parseFloat(element.getAttribute('data-rating'));
+            element.innerHTML = renderStars(rating);
+        });
+    });
+</script>

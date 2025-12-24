@@ -1,0 +1,314 @@
+.forum-app {
+    margin: 0 auto;
+    display: flex;
+    padding-top: 20px;
+    justify-content: space-between;
+}
+
+/* Left Sidebar (Main Navigation) */
+.left-sidebar,
+.right-sidebar {
+    width: 300px;
+    /*background-color: #ffffff;*/
+    padding: 15px;
+    border-radius: 8px;
+    border: 0px solid #ddd;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    /*position: relative;*/
+    /*z-index: 1; /* Ensure this is above any overlapping content */
+}
+
+/* Left Sidebar Links */
+.left-sidebar a,
+.right-sidebar a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    color: var(--sidebar--text-color); /* Dark text color for readability */
+    font-size: 15px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.left-sidebar a:hover,
+.right-sidebar a:hover {
+    background-color: var( --sidebar--hover-color)
+}
+
+.left-sidebar a img,
+.right-sidebar a img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.left-sidebar .more-link,
+.right-sidebar .more-link {
+    display: flex;
+    align-items: center;
+    color: #606770; /* Slightly lighter text color for secondary items */
+    font-size: 15px;
+    margin-top: 15px;
+}
+
+.left-sidebar .more-link:hover,
+.right-sidebar .more-link:hover {
+    background-color: var( --sidebar--hover-color)
+}
+
+/* Content Area (Post List) */
+.content-area {
+    flex: 1;
+    margin: 0 auto; /* Center the content area */
+    padding-top: 20px;
+    max-width: 700px; /* Optional: Set a max-width to control the content area size */
+    z-index: 0; /* Ensure content stays below the sidebars */
+}
+
+/* Post Input Container */
+.post-input-container {
+    background-color: var(--sidebar--background-color);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 15px; /* Reduced padding */
+    margin: 0 auto 10px; /* Reduced margin below */
+    border: 1px solid var(--sidebar--border-color);
+    width: 85%; /* Set a smaller width */
+}
+
+
+.post-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color:var(--inputf--background-color);
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.post-input input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background-color:var(--inputf--background-color);
+    color: #606770;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+}
+
+.post-input input:focus {
+    background-color: var( --sidebar--hover-color)
+}
+
+/* User Dashboard */
+.post-dashboard {
+    position: relative; /* Use relative positioning to fit within the sidebar */
+    width: 100%; /* Full width of the sidebar */
+    padding: 20px;
+    background-color: #ffffff; /* White background for a clean look */
+    border-radius: 10px; /* Soft rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Strong shadow for depth */
+    z-index: 1; /* Normal stacking context */
+    transition: all 0.3s ease-in-out; /* Smooth transition effects */
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.user-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #212529; /* Dark color for better contrast */
+}
+
+.search-container {
+    margin-bottom: 25px;
+    width: 100%; /* Full width of the container */
+}
+
+.search-input {
+    width: 91%; /* Full width for search input */
+    padding: 12px;
+    border: 1px solid #ced4da; /* Light gray border */
+    border-radius: 8px; /* Rounded input */
+    font-size: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin-bottom: 20px; /* Added space below the search box */
+}
+
+.sort-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.sort-options label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: #495057; /* Medium gray for labels */
+}
+
+.sort-options input[type="radio"] {
+    margin-right: 10px;
+}
+
+.order-sort label {
+    margin-bottom: 8px;
+}
+
+.order-sort select {
+    width: 100%; /* Full width for select */
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+
+/* Dropdown */
+.dropdown-toggle-left,
+.dropdown-toggle-right {
+    display: none;
+}
+
+/* Ẩn dropdown cho desktop view */
+.dropdown-toggle-left,
+.dropdown-toggle-right {
+    display: none;
+}
+
+/* Chỉ áp dụng cho mobile view */
+@media (max-width: 768px) {
+    .dropdown-toggle-left,
+    .dropdown-toggle-right {
+        background-color: var(--background-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .dropdown-toggle-left span,
+    .dropdown-toggle-right span {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .dropdown-toggle-left img,
+    .dropdown-toggle-right img {
+        width: 20px;
+        height: 20px;
+        color: var( --sidebar--text-color);
+    }
+
+    .left-sidebar,
+    .right-sidebar {
+        display: none; /* Ẩn sidebar mặc định trên mobile */
+        position: fixed; /* Đặt sidebar ở vị trí cố định */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Canh giữa màn hình */
+        background-color: #ffffff;
+        z-index: 9999; /* Hiển thị trên tất cả các thành phần khác */
+        width: 90%; /* Đảm bảo sidebar không chiếm quá nhiều không gian */
+        max-height: 80vh; /* Giới hạn chiều cao */
+        overflow-y: auto; /* Thêm scroll nếu nội dung quá dài */
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Thêm shadow để rõ ràng hơn */
+        border-radius: 8px;
+    }
+
+    .left-sidebar.show-sidebar,
+    .right-sidebar.show-sidebar {
+        display: block; /* Hiển thị sidebar khi click vào dropdown */
+        background-color: var(--ipnut--background-color);
+    }
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    display: none; /* Ẩn overlay mặc định */
+}
+
+.left-sidebar.show-sidebar ~ .modal-overlay,
+.right-sidebar.show-sidebar ~ .modal-overlay {
+    display: block; /* display overlay for sidebar */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998; /*Stay below sidebar */
+}
+
+.modal-content {
+    position: relative;
+    z-index: 9999; /* Above overlay */
+    /* Other elements for modal */
+}
+
+/* Comment on top */
+.comment-section {
+    position: relative;
+    z-index: 1000; /* The highest element on top */
+}
+
+/* Scroll not to glow */
+.left-sidebar
+ {
+    /*position: static; /*Non correct */
+    z-index: 0; /* Lowest */
+}
+
+.right-sidebar{
+    z-index: -1;
+}
+
+.comment-open .left-sidebar,
+.comment-open .right-sidebar {
+    /*position: static; /* Ensure sidebars stay in their place */
+    z-index: 0;
+}
+
+/* Điều chỉnh khi ở mobile */
+@media (max-width: 768px) {
+    .left-sidebar,
+    .right-sidebar {
+        z-index: 1;
+        top:33% /* Not glow on comment */
+    }
+
+    .comment-section {
+        z-index: 10001; /* Comment on top */
+    }
+}

@@ -1,0 +1,122 @@
+/* Register Modal Overlay */
+.register-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.register-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* Register Container */
+.register-container {
+    max-width: 400px;
+    width: 100%;
+    background-color:var(--sidebar--background-color);
+    border: 1px solid var(--sidebar--border-color);
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 2;
+    position: relative;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+/* Close Button Positioned Inside Top Right of Popup */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff5a5f;
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0;
+    z-index: 3;
+}
+
+/* Register Heading */
+.register-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Register Form */
+.register-container .form-group {
+    margin-bottom: 25px; /* Increased margin to create more space */
+    width: 100%; /* Ensure form group takes full width */
+}
+
+.register-container label {
+    font-size: 16px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.register-container input {
+    padding: 10px;
+    width: 100%; /* Ensure input fields take full width */
+    border: 1px solid var(--sidebar--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box; /* Ensure padding is included in width */
+    color: var(--sidebar--text-color);
+    background-color: var( --inputf--background-color);
+}
+
+/* Register Button */
+.register-container button {
+    padding: 12px 20px;
+    background-color: #f27318;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.register-container button:hover {
+    background-color: #166fe5;
+}
+
+/* Error Message */
+.error-message {
+    color: #f02849;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+    display: none;
+}
+
+/* Loading Message */
+.loading-message {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+    display: none;
+}
