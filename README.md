@@ -1,10 +1,7 @@
-# Group Project - COSC3060 / COSC3061 (2024B-G2)
 
 ## 1. Website Details
-- **Website URL**: [https://group-project-cosc3060-cosc3061-2024b-g2.onrender.com](https://group-project-cosc3060-cosc3061-2024b-g2.onrender.com)
 
 ## 2. Github Repository
-- **Github Repo URL**: [https://github.com/RMIT-Vietnam-Teaching/group-project-cosc3060-cosc3061-2024b-g2](https://github.com/RMIT-Vietnam-Teaching/group-project-cosc3060-cosc3061-2024b-g2)
 
 ## 3. Website Test User Logins
 
@@ -13,15 +10,6 @@
   - **Password**: Admin1234.
 
 Use the above credentials to log in as an admin user to manage the website.
-
-## 4. MongoDB Atlas Connection
-
-The MongoDB connection is set up using MongoDB Atlas. The connection URL is stored in a `.env` file as follows:
-
-```bash
-MONGO=mongodb+srv://takikuty123:Havip112@haphan.cjfhfem.mongodb.net/learningdata
-```
-
 ## 5. Project instruction
 ### Step 1: Clone the repository
 
